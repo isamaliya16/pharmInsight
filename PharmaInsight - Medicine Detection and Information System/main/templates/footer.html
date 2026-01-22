@@ -1,0 +1,221 @@
+
+<head>
+    <meta charset="UTF-8">
+    <title>MediScan | AI Medicine Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        
+:root {
+    --primary: #1e88e5;
+    --secondary: #00bfa5;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --gray: #64748b;
+}
+
+/* ===============================
+   TRUST BAR
+================================ */
+.trust-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    background: #0f172a;
+    padding: 35px 5%;
+    text-align: center;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.05);
+}
+
+.trust-bar div {
+    font-size: 15px;
+    color: white ;
+}
+
+.trust-bar i {
+    font-size: 28px;
+    color: var(--secondary);
+    margin-bottom: 8px;
+}
+
+/* ===============================
+   MAIN FOOTER
+================================ */
+.footer {
+    background: #0f172a;
+    color: #cbd5e1;
+    padding: 70px 5% 40px;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    max-width: 1300px;
+    margin: auto;
+}
+
+/* Footer Logo */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.footer-logo i {
+    font-size: 34px;
+    color: var(--secondary);
+}
+
+.footer-logo small {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Footer Text */
+.footer-text {
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Social Icons */
+.social-icons {
+    display: flex;
+    gap: 12px;
+}
+
+.social-icons a {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background: var(--secondary);
+    color: #fff;
+}
+
+/* Footer Columns */
+.footer-col h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: var(--secondary);
+    padding-left: 6px;
+}
+
+/* Contact Info */
+.footer-col p {
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.footer-col p i {
+    color: var(--secondary);
+    margin-right: 8px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 600px) {
+    .cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}
+    
+    </style>
+</head>
+<!-- footer.html -->
+<!-- Trust Bar -->
+<footer class="trust-bar">
+    <div><i class="fa fa-shield"></i> <b>100% Secure</b><br>Verified Medicines</div>
+    <div><i class="fa fa-certificate"></i> <b>Certified</b><br>Licensed Pharmacy</div>
+    <div><i class="fa fa-clock"></i> <b>24/7 Support</b><br>Always Available</div>
+    <div><i class="fa fa-pills"></i> <b>Genuine Meds</b><br>Quality Assured</div>
+</footer>
+
+<!-- Main Footer -->
+<footer class="footer" id="contact">
+    <div class="footer-container">
+        <div class="footer-col">
+            <div class="footer-logo">
+                <i class="fa-solid fa-capsules"></i>
+                <span>MediScan<br><small>PharmaInsight</small></span>
+            </div>
+            <p class="footer-text">
+                Your trusted companion for medicine identification,
+                information, and online purchase. Powered by advanced AI technology.
+            </p>
+            <div class="social-icons">
+                <a><i class="fab fa-facebook-f"></i></a>
+                <a><i class="fab fa-twitter"></i></a>
+                <a><i class="fab fa-instagram"></i></a>
+                <a><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a>Home</a></li>
+                <li><a>Medicine Search</a></li>
+                <li><a>About Us</a></li>
+                <li><a>Health Resources</a></li>
+                <li><a>Contact Us</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+                <li><a>Medicine Identification</a></li>
+                <li><a>Drug Information</a></li>
+                <li><a>Alternative Medicines</a></li>
+                <li><a>Order Medicines</a></li>
+                <li><a>Prescription Upload</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Contact Us</h4>
+            <p><i class="fa fa-phone"></i> +91 1800-XXX-XXXX</p>
+            <p><i class="fa fa-envelope"></i> support@mediscan.com</p>
+            <p><i class="fa fa-location-dot"></i> Mumbai, Maharashtra</p>
+        </div>
+    </div>
+</footer>

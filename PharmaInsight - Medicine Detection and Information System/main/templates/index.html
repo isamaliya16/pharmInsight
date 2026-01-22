@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MediScan | AI Medicine Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+:root {
+    --primary: #1e88e5;
+    --secondary: #00bfa5;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --gray: #64748b;
+}
+
+/* ===============================
+   BASE BODY
+================================ */
+body {
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+/* ===============================
+   HERO SECTION
+================================ */
+.hero {
+    padding: clamp(50px, 8vw, 90px) 5%;
+    text-align: center;
+    max-width: 1300px;
+    margin: auto;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(30,136,229,0.1);
+    color: var(--primary);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero h1 span {
+    color: var(--primary);
+}
+
+.hero p {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--gray);
+    max-width: 750px;
+    margin: auto;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.buttons button {
+    padding: 14px 28px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    min-width: 180px;
+    transition: all 0.3s ease;
+}
+
+.primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.primary:hover {
+    background: #1565c0;
+    transform: translateY(-3px);
+}
+
+.secondary {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.secondary:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ===============================
+   STATS / CARDS
+================================ */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    margin-top: 70px;
+}
+
+.card {
+    background: #fff;
+    padding: 35px 20px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+}
+
+.card i {
+    font-size: 38px;
+    color: var(--secondary);
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    font-size: clamp(26px, 3vw, 32px);
+    color: var(--primary);
+}
+
+.card p {
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+/* ===============================
+   MOBILE (≤ 600px)
+================================ */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .auth {
+        width: 100%;
+        justify-content: center;
+    }
+
+    nav {
+        width: 100%;
+        justify-content: space-around;
+    }
+}
+
+/* ===============================
+   TABLET (601px – 992px)
+================================ */
+@media (min-width: 601px) and (max-width: 992px) {
+    .hero {
+        padding: 70px 6%;
+    }
+}
+
+/* ===============================
+   LARGE SCREENS (≥ 1400px)
+================================ */
+@media (min-width: 1400px) {
+    .hero {
+        max-width: 1500px;
+    }
+}
+
+/* ===============================
+   SEARCH METHODS SECTION
+================================ */
+.search-methods {
+    padding: clamp(60px, 8vw, 100px) 5%;
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    text-align: center;
+}
+
+/* Section Heading */
+.search-methods h2 {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--dark);
+}
+
+/* Subtitle */
+.search-methods .subtitle {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--gray);
+    margin-bottom: 60px;
+}
+
+/* Card Grid */
+.method-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Individual Card */
+.method-card {
+    background: #ffffff;
+    padding: 40px 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.method-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+}
+
+/* Icon Wrapper */
+.method-card .icon {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    margin-bottom: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #fff;
+}
+
+/* Icon Color Variants */
+.icon.blue {
+    background: linear-gradient(135deg, #1e88e5, #42a5f5);
+}
+
+.icon.green {
+    background: linear-gradient(135deg, #00bfa5, #26d9c0);
+}
+
+.icon.gray {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+}
+
+.icon.dark {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+/* Card Title */
+.method-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark);
+}
+
+/* Card Description */
+.method-card p {
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+/* ===============================
+   RESPONSIVE OPTIMIZATION
+================================ */
+@media (max-width: 600px) {
+    .method-card {
+        padding: 30px 20px;
+    }
+
+    .method-card h3 {
+        font-size: 18px;
+    }
+
+    .method-card p {
+        font-size: 14px;
+    }
+}
+
+
+/* ===============================
+   HOW IT WORKS SECTION
+================================ */
+.how-it-works {
+    padding: clamp(70px, 9vw, 110px) 5%;
+    background: linear-gradient(135deg, #eef2ff, #ffffff);
+    text-align: center;
+}
+
+/* Section Title */
+.how-it-works h2 {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--dark);
+}
+
+/* Subtitle */
+.how-it-works .subtitle {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--gray);
+    margin-bottom: 70px;
+}
+
+/* Steps Container */
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 50px;
+    max-width: 1100px;
+    margin: auto;
+    position: relative;
+}
+
+/* Step Card */
+.step {
+    background: #ffffff;
+    padding: 45px 30px;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    position: relative;
+}
+
+/* Hover Effect */
+.step:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+}
+
+/* Number Circle */
+.circle {
+    width: 65px;
+    height: 65px;
+    margin: auto;
+    margin-bottom: 25px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(30,136,229,0.35);
+}
+
+/* Step Title */
+.step h4 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark);
+}
+
+/* Step Description */
+.step p {
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+/* ===============================
+   RESPONSIVE ADJUSTMENTS
+================================ */
+@media (max-width: 600px) {
+    .step {
+        padding: 35px 22px;
+    }
+
+    .circle {
+        width: 58px;
+        height: 58px;
+        font-size: 18px;
+    }
+
+    .step h4 {
+        font-size: 18px;
+    }
+
+    .step p {
+        font-size: 14px;
+    }
+}
+
+/* ===============================
+   CTA SECTION
+================================ */
+.cta {
+    padding: clamp(60px, 8vw, 90px) 5%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta i.fa-heart {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #ffdde5;
+}
+
+.cta h2 {
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.cta p {
+    font-size: clamp(15px, 2vw, 18px);
+    opacity: 0.95;
+    max-width: 650px;
+    margin: auto;
+    margin-bottom: 35px;
+}
+
+/* CTA Button */
+.cta-btn {
+    padding: 16px 32px;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    background: #ffffff;
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.35s ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+    </style>
+</head>
+<body>
+    
+
+    
+{% include "header.html" %}
+
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+
+    <span class="badge">🇮🇳 India's Most Trusted Medicine Platform</span>
+
+    <h1>
+        Identify Medicines <span>Instantly</span><br>
+        With AI-Powered Search
+    </h1>
+
+    <p>
+        Search by text, image, or voice. Get complete medicine information,
+        alternatives, and purchase options in seconds.
+    </p>
+    
+    <div class="buttons">
+    <button class="primary" onclick="goToSearch()">
+        <i class="fa fa-search"></i> Start Searching
+    </button>
+
+    <button class="secondary" onclick="goToAbout()">
+        Learn More →
+    </button>
+
+    </div>
+
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="card">
+            <i class="fa fa-pills"></i>
+            <h3>50K+</h3>
+            <p>Medicines</p>
+        </div>
+        <div class="card">
+            <i class="fa fa-users"></i>
+            <h3>1M+</h3>
+            <p>Users</p>
+        </div>
+        <div class="card">
+            <i class="fa fa-headset"></i>
+            <h3>24/7</h3>
+            <p>Support</p>
+        </div>
+        <div class="card">
+            <i class="fa fa-check-circle"></i>
+            <h3>99.9%</h3>
+            <p>Accuracy</p>
+        </div>
+    </div>
+</section>
+
+
+<section class="search-methods" id="search">
+    <h2>Multiple Ways to Search</h2>
+    <p class="subtitle">Choose the method that works best for you</p>
+
+    <div class="method-cards">
+        <div class="method-card">
+            <div class="icon blue"><i class="fa fa-search"></i></div>
+            <h3>Text Search</h3>
+            <p>Type medicine name to get instant information</p>
+        </div>
+
+        <div class="method-card">
+            <div class="icon green"><i class="fa fa-camera"></i></div>
+            <h3>Image Recognition</h3>
+            <p>Upload medicine strip or bottle image</p>
+        </div>
+
+        <div class="method-card">
+            <div class="icon gray"><i class="fa fa-microphone"></i></div>
+            <h3>Voice Input</h3>
+            <p>Speak medicine name for hands-free search</p>
+        </div>
+
+        <div class="method-card">
+            <div class="icon dark"><i class="fa fa-shield"></i></div>
+            <h3>Verified Info</h3>
+            <p>Get authentic, verified medicine data</p>
+        </div>
+    </div>
+</section>
+
+
+
+
+<section class="how-it-works"  id="how" >
+    <h2>How It Works</h2>
+    <p class="subtitle">Get medicine information in just 3 simple steps</p>
+
+    <div class="steps">
+        <div class="step">
+            <span class="circle">01</span>
+            <h4>Search Medicine</h4>
+            <p>Enter name, upload image, or use voice</p>
+        </div>
+
+        <div class="step">
+            <span class="circle">02</span>
+            <h4>View Details</h4>
+            <p>Get complete information and alternatives</p>
+        </div>
+
+        <div class="step">
+            <span class="circle">03</span>
+            <h4>Order Online</h4>
+            <p>Purchase with secure payment options</p>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="cta" id="cta">
+    <i class="fa fa-heart"></i>
+    <h2>Start Your Health Journey Today</h2>
+    <p>Join millions of users who trust MediScan for reliable medicine information</p>
+
+    <button class="cta-btn" onclick="goToSearch()">
+        <i class="fa fa-search"></i> Search Medicines Now
+    </button>
+     
+</section>
+<div id="footer"></div>
+
+<script>
+function loadComponent(id, file) {
+    fetch(file)
+        .then(res => {
+            if (!res.ok) throw new Error(file + " not found");
+            return res.text();
+        })
+        .then(data => {
+            document.getElementById(id).innerHTML = data;
+        })
+        .catch(err => console.error(err));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadComponent("header", "header.html");
+    loadComponent("footer", "footer.html");
+});
+
+function goToSearch() {
+    window.location.href = "/search.html";
+}
+
+function goToAbout() {
+    window.location.href = "about.html";
+}
+</script>
+
+
+
+
+{% include "footer.html" %}
+
+</body>
+</html>

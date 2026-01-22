@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medicine Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:linear-gradient(180deg,#f7fafc,#ffffff);
+    color:#222;
+}
+
+/* ================= CONTAINER ================= */
+.container{
+    max-width:900px;
+    margin:80px auto;
+    text-align:center;
+    padding:0 20px;
+}
+
+/* ================= HEADER ================= */
+h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#666;
+    margin-bottom:30px;
+}
+
+/* ================= TABS ================= */
+.tabs{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:30px;
+}
+
+.tab{
+    padding:10px 18px;
+    border-radius:10px;
+    border:1px solid #e0e7ef;
+    background:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+}
+
+.tab.active{
+    background:#2b7cff;
+    color:#fff;
+    border-color:#2b7cff;
+}
+
+/* ================= SEARCH BOX ================= */
+.search-box{
+    background:#fff;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+/* TEXT SEARCH */
+.text-search input{
+    width:100%;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1px solid #dbe4f0;
+    font-size:15px;
+}
+
+.search-btn{
+    margin-top:15px;
+    width:100%;
+    padding:14px;
+    background:#9cc7f5;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+/* IMAGE UPLOAD */
+.upload-area{
+    border:2px dashed #bcd3f5;
+    padding:40px;
+    border-radius:14px;
+    color:#555;
+}
+
+.upload-area i{
+    font-size:26px;
+    color:#2b7cff;
+    margin-bottom:10px;
+}
+
+.upload-btn{
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #2b7cff;
+    background:#fff;
+    color:#2b7cff;
+    cursor:pointer;
+}
+
+/* VOICE */
+.voice-area{
+    padding:40px;
+}
+
+.mic{
+    width:80px;
+    height:80px;
+    background:#2b7cff;
+    border-radius:50%;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    margin:0 auto 15px;
+}
+
+/* ================= POPULAR ================= */
+.popular{
+    margin-top:25px;
+    font-size:14px;
+    color:#666;
+}
+
+.popular span{
+    margin:0 8px;
+    color:#000;
+    cursor:pointer;
+}
+
+/* ================= BOTTOM INFO ================= */
+.info{
+    margin-top:70px;
+    opacity:.8;
+}
+
+.info i{
+    font-size:30px;
+    color:#ff6b6b;
+    margin-bottom:10px;
+}
+
+/* ================= HIDE ================= */
+.hide{display:none;}
+
+
+/* ================= RESULT CARD ================= */
+.result {
+    margin-top: 40px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+    text-align: left;
+    animation: fadeIn 0.6s ease;
+}
+
+.result h2 {
+    font-size: 26px;
+    color: #2b7cff;
+    margin-bottom: 10px;
+}
+
+.result p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.result h3 {
+    margin-top: 25px;
+    font-size: 18px;
+    color: #111;
+    border-left: 4px solid #2b7cff;
+    padding-left: 10px;
+}
+
+/* ================= INFO GRID ================= */
+.meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.meta div {
+    background: #f4f8ff;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* ================= ERROR ================= */
+.error {
+    margin-top: 25px;
+    padding: 15px;
+    background: #ffe5e5;
+    color: #c62828;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
+
+<body>
+    
+    
+{% include "header.html" %}
+
+<div class="container">
+
+    <h1>Medicine Search</h1>
+    <p class="subtitle">
+        Search using text, image, or voice to find complete medicine information
+    </p>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('text')">
+            <i class="fa fa-search"></i> Text Search
+        </div>
+        <div class="tab" onclick="showTab('image')">
+            <i class="fa fa-camera"></i> Image Upload
+        </div>
+        <div class="tab" onclick="showTab('voice')">
+            <i class="fa fa-microphone"></i> Voice Input
+        </div>
+    </div>
+
+    <!-- SEARCH BOX -->
+    <div class="search-box">
+
+        <!-- TEXT -->
+        <form method="POST">
+        <div id="text" class="text-search">
+            <input type="text" name="medicine" placeholder="Enter medicine name (e.g., Paracetamol, Aspirin...)" required>
+            <button type='submit' class="search-btn" onclick="searchMedicine()">
+                <i class="fa fa-search"></i> Search Medicine
+            </button>
+        </div>
+        </form>
+
+         <!-- IMAGE -->
+        <div id="image" class="hide">
+            <div class="upload-area">
+                <i class="fa fa-upload"></i>
+                <p><b>Upload Medicine Image</b></p>
+                <small>Click or drag & drop medicine strip/bottle</small>
+            </div>
+            <button class="upload-btn">
+                <i class="fa fa-camera"></i> Select Image
+            </button>
+        </div>
+
+        <!-- VOICE -->
+        <div id="voice" class="hide voice-area">
+            <div class="mic" onclick="startVoice()">
+                <i class="fa fa-microphone"></i>
+            </div>
+            <p id="voiceText"><b>Tap to Speak</b></p>
+            <small>Say the medicine name (e.g., “Paracetamol”)</small>
+            
+            <form method="POST" id="voiceForm">
+                <input type="hidden" name="medicine" id="voiceInput">
+            </form>
+        </div>
+         
+   
+
+
+    <!-- POPULAR -->
+    <div class="popular">
+        Popular searches:
+        <span>Paracetamol</span>
+        <span>Aspirin</span>
+        <span>Amoxicillin</span>
+        <span>Ibuprofen</span>
+        <span>Cetirizine</span>
+    </div>
+
+    <!-- INFO -->
+    <div class="info">
+        <i class="fa fa-pills"></i>
+        <h3>Start Your Search</h3>
+        <p>
+            Enter a medicine name, upload an image, or use voice input to<br>
+            get complete information
+        </p>
+    </div>
+
+
+
+
+    <!-- ERROR -->
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <!-- RESULT -->
+   <!-- ERROR MESSAGE -->
+{% if error %}
+<div class="error">
+    ⚠️ {{ error }}
+</div>
+{% endif %}
+
+<!-- MEDICINE RESULT -->
+{% if medicine %}
+<div class="result">
+
+    <!-- TITLE -->
+    <h2>💊 {{ medicine.brand }}</h2>
+
+    <!-- BASIC DETAILS -->
+    <div class="meta">
+        <div>
+            <b>Generic Name</b><br>
+            {{ medicine.generic }}
+        </div>
+        <div>
+            <b>Manufacturer</b><br>
+            {{ medicine.manufacturer }}
+        </div>
+        <div>
+            <b>Route of Administration</b><br>
+            {{ medicine.route }}
+        </div>
+    </div>
+
+    <!-- PURPOSE -->
+    <h3>📌 Purpose</h3>
+    <p>
+        {{ medicine.purpose }}
+    </p>
+
+    <!-- USES -->
+    <h3>🩺 Uses</h3>
+    <p>
+        {{ medicine.uses }}
+    </p>
+
+    <!-- DOSAGE -->
+    <h3>💉 Dosage & Administration</h3>
+    <p>
+        {{ medicine.dosage }}
+    </p>
+
+    <!-- WARNINGS -->
+    <h3>⚠️ Warnings & Precautions</h3>
+    <p>
+        {{ medicine.warnings }}
+    </p>
+
+    <!-- SIDE EFFECTS -->
+    <h3>❗ Side Effects</h3>
+    <p>
+        {{ medicine.side_effects }}
+    </p>
+
+    <!-- STORAGE -->
+    <h3>📦 Storage Instructions</h3>
+    <p>
+        {{ medicine.storage }}
+    </p>
+
+    <!-- OPTIONAL EXTRA INFO -->
+    {% if medicine.drug_interactions %}
+    <h3>🔄 Drug Interactions</h3>
+    <p>
+        {{ medicine.drug_interactions }}
+    </p>
+    {% endif %}
+
+    {% if medicine.overdose %}
+    <h3>🚨 Overdose Information</h3>
+    <p>
+        {{ medicine.overdose }}
+    </p>
+    {% endif %}
+
+    <!-- DISCLAIMER -->
+    <div style="margin-top:30px; font-size:13px; color:#666;">
+        ⚕️ <b>Disclaimer:</b> This information is for educational purposes only.  
+        Always consult a qualified doctor or pharmacist before using any medicine.
+    </div>
+
+</div>
+{% endif %}
+
+
+</div>
+
+<script>
+function showTab(tab){
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    event.target.closest(".tab").classList.add("active");
+
+    document.getElementById("text").classList.add("hide");
+    document.getElementById("image").classList.add("hide");
+    document.getElementById("voice").classList.add("hide");
+
+    document.getElementById(tab).classList.remove("hide");
+}
+
+
+function showTab(tab){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    document.getElementById('text').classList.add('hide');
+    document.getElementById('voice').classList.add('hide');
+
+    document.getElementById(tab).classList.remove('hide');
+}
+
+function startVoice(){
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Voice not supported");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.start();
+
+    recognition.onresult = function(event){
+        const text = event.results[0][0].transcript;
+        document.getElementById("voiceText").innerText = "You said: " + text;
+        document.getElementById("voiceInput").value = text;
+        document.getElementById("voiceForm").submit();
+    };
+}
+</script>
+
+</body>
+</html>

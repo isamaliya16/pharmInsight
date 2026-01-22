@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search History | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:#f6f9fc;
+    color:#222;
+}
+
+/* ================= HEADER ================= */
+.header{
+    max-width:1200px;
+    margin:40px auto 20px;
+    padding:0 20px;
+}
+
+.header-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header h1{
+    font-size:28px;
+}
+
+.subtitle{
+    color:#666;
+    margin-top:5px;
+}
+
+.clear-btn{
+    background:#ff3b30;
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* ================= SEARCH BAR ================= */
+.search-bar{
+    margin:20px auto;
+    max-width:1200px;
+    padding:0 20px;
+}
+
+.search-box{
+    background:#fff;
+    padding:15px;
+    border-radius:14px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.search-box input{
+    flex:1;
+    border:none;
+    outline:none;
+    font-size:15px;
+}
+
+.search-box button{
+    padding:10px 16px;
+    border-radius:10px;
+    border:1px solid #2b7cff;
+    background:#fff;
+    color:#2b7cff;
+    cursor:pointer;
+}
+
+/* ================= HISTORY LIST ================= */
+.history{
+    max-width:1200px;
+    margin:30px auto;
+    padding:0 20px;
+}
+
+.card{
+    background:#fff;
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-left{
+    display:flex;
+    gap:15px;
+}
+
+.icon{
+    width:44px;
+    height:44px;
+    background:#eaf2ff;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2b7cff;
+}
+
+.card h3{
+    font-size:16px;
+}
+
+.card p{
+    font-size:13px;
+    color:#666;
+    margin-top:4px;
+}
+
+.meta{
+    font-size:12px;
+    color:#999;
+    margin-top:6px;
+}
+
+.badge{
+    background:#eaf2ff;
+    color:#2b7cff;
+    padding:6px 10px;
+    font-size:12px;
+    border-radius:20px;
+}
+
+/* EMPTY */
+.empty{
+    text-align:center;
+    color:#888;
+    margin-top:60px;
+}
+</style>
+</head>
+
+<body>
+    
+
+{% include "header.html" %}
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-top">
+        <div>
+            <h1>Search History</h1>
+            <p class="subtitle">View your recent medicine searches</p>
+        </div>
+        <button class="clear-btn" onclick="clearHistory()">
+            <i class="fa fa-trash"></i> Clear History
+        </button>
+    </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-bar">
+    <div class="search-box">
+        <i class="fa fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search history..." onkeyup="filterHistory()">
+        <button><i class="fa fa-filter"></i> Filter</button>
+        <button><i class="fa fa-calendar"></i> Date Range</button>
+    </div>
+</div>
+
+<!-- HISTORY LIST -->
+<div class="history" id="historyList"></div>
+
+
+{% include "footer.html" %}
+
+<script>
+    function loadComponent(id, file) {
+        fetch(file)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById(id).innerHTML = data;
+        });
+    }
+
+    loadComponent('header', 'header.html');
+    loadComponent('footer', 'footer.html');
+// ================= SAVE HISTORY FUNCTION =================
+// Call this function from search page
+function saveHistory(name, desc, type){
+    let history = JSON.parse(localStorage.getItem("medicineHistory")) || [];
+    history.unshift({
+        name,
+        desc,
+        type,
+        time:new Date().toLocaleTimeString(),
+        date:new Date().toDateString()
+    });
+    localStorage.setItem("medicineHistory", JSON.stringify(history));
+}
+
+// ================= LOAD HISTORY =================
+function loadHistory(){
+    const history = JSON.parse(localStorage.getItem("medicineHistory")) || [];
+    const container = document.getElementById("historyList");
+    container.innerHTML = "";
+
+    if(history.length === 0){
+        container.innerHTML = `<div class="empty">No search history found</div>`;
+        return;
+    }
+
+    history.forEach(item=>{
+        container.innerHTML += `
+        <div class="card">
+            <div class="card-left">
+                <div class="icon">
+                    <i class="fa ${item.type==='Image Search'?'fa-camera':item.type==='Voice Search'?'fa-microphone':'fa-search'}"></i>
+                </div>
+                <div>
+                    <h3>${item.name}</h3>
+                    <p>${item.desc}</p>
+                    <div class="meta">
+                        <i class="fa fa-clock"></i> ${item.time} &nbsp; 
+                        <i class="fa fa-calendar"></i> ${item.date}
+                    </div>
+                </div>
+            </div>
+            <span class="badge">${item.type}</span>
+        </div>`;
+    });
+}
+
+// ================= FILTER =================
+function filterHistory(){
+    const val = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll(".card").forEach(card=>{
+        card.style.display = card.innerText.toLowerCase().includes(val) ? "flex" : "none";
+    });
+}
+
+// ================= CLEAR =================
+function clearHistory(){
+    if(confirm("Clear all search history?")){
+        localStorage.removeItem("medicineHistory");
+        loadHistory();
+    }
+}
+
+// DEMO DATA (remove later)
+if(!localStorage.getItem("medicineHistory")){
+    saveHistory("Paracetamol 500mg","Pain reliever and fever reducer","Text Search");
+    saveHistory("Amoxicillin 250mg","Antibiotic for infections","Image Search");
+    saveHistory("Cetirizine 10mg","Antihistamine for allergies","Voice Search");
+    saveHistory("Ibuprofen 400mg","NSAID pain reliever","Text Search");
+    saveHistory("Omeprazole 20mg","Acid reflux medicine","Text Search");
+}
+
+loadHistory();
+</script>
+
+</body>
+</html>
