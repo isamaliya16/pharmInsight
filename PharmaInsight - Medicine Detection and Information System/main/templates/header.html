@@ -1,189 +1,233 @@
-
 <head>
     <meta charset="UTF-8">
     <title>MediScan | AI Medicine Search</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        
-:root {
-    --primary: #1e88e5;
-    --secondary: #00bfa5;
-    --dark: #0f172a;
-    --light: #f8fafc;
-    --gray: #64748b;
-}
+        :root {
+            --primary: #1e88e5;
+            --secondary: #00bfa5;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
 
-/* ===============================
-   TOP BAR
-================================ */
-.top-bar {
-    background: var(--dark);
-    color: #fff;
-    padding: 8px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 14px;
-}
+        /* ------------------- TOP BAR ------------------- */
+        .top-bar {
+            background: var(--dark);
+            color: #fff;
+            padding: 8px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 14px;
+        }
 
-.top-bar i {
-    color: var(--secondary);
-    margin-right: 6px;
-}
+        .top-bar i { color: var(--secondary); margin-right: 6px; }
 
-.lang span {
-    margin-left: 12px;
-    cursor: pointer;
-    font-weight: 600;
-}
+        .lang span {
+            margin-left: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
 
-/* ===============================
-   NAVBAR
-================================ */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 5%;
-    background: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    flex-wrap: wrap;
-}
+        /* ------------------- NAVBAR ------------------- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 5%;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
 
-/* Logo */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 5px; 
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+        }
 
-.logo i {
-    font-size: 40px;
-    color: var(--primary);
-}
+        .logo i { font-size: 40px; color: var(--primary); }
 
-.logo span {
-    font-size: clamp(15px, 2vw, 22px);
-    font-weight: 700;
-}
+        .logo span { font-size: clamp(15px, 2vw, 22px); font-weight: 700; }
 
-/* Nav Links */
-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-}
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
 
-nav a {
-    text-decoration: none;
-    color: var(--dark);
-    font-weight: 500;
-    position: relative;
-    padding: 6px 4px;
-}
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            position: relative;
+            padding: 6px 4px;
+        }
 
-nav a i {
-    margin-right: 6px;
-}
+        nav a i { margin-right: 6px; }
 
-nav a:hover,
-nav a.active {
-    color: var(--primary);
-}
+        nav a:hover,
+        nav a.active { color: var(--primary); }
 
-nav a::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 2px;
-    background: var(--primary);
-    left: 0;
-    bottom: -4px;
-    transition: 0.3s;
-}
+        nav a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            left: 0;
+            bottom: -4px;
+            transition: 0.3s;
+        }
 
-nav a:hover::after,
-nav a.active::after {
-    width: 100%;
-}
+        nav a:hover::after,
+        nav a.active::after { width: 100%; }
 
-/* Auth */
-.auth {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+        .auth {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.auth a {
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: 600;
-    text-decoration: none;
-}
+        .auth a {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+        }
 
-.login {
-    border: 2px solid var(--primary);
-    color: var(--primary);
-}
+        .login {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
 
-.login:hover {
-    background: var(--primary);
-    color: #fff;
-}
+        .login:hover {
+            background: var(--primary);
+            color: #fff;
+        }
 
-.register {
-    background: var(--secondary);
-    color: #fff;
-}
+        .register {
+            background: var(--secondary);
+            color: #fff;
+        }
 
-.register:hover {
-    background: #009e88;
-}
+        .register:hover { background: #009e88; }
 
-.cart {
-    font-size: 20px;
-    cursor: pointer;
-}
+        .header-icons{
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
 
+        .icon-btn{
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #222;
+            border-radius: 50%;
+            font-size: 18px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover{
+            background: #4f46e5;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ------------------- MOBILE MENU ------------------- */
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--dark);
+        }
+
+        @media (max-width: 900px) {
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+                gap: 10px;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .auth {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
     </style>
-</head> 
+</head>
 
-<!-- header.html -->
-<!-- Top Bar -->
-<div class="top-bar">
-    <span><i class="fa-solid fa-phone"></i> +91 1800-XXX-XXXX</span>
-    <span><i class="fa-solid fa-envelope"></i> support@mediscan.com</span>
-    <div class="lang">
-        <span>EN</span><span>HI</span><span>GU</span>
-    </div>
-</div>
-
-<!-- Navbar -->
-<header class="navbar">
-    <div class="logo">
-        <i class="fa-solid fa-capsules"></i>
-        <span>MediScan<br><small>PharmaInsight</small></span>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <span><i class="fa-solid fa-phone"></i> +91 1800-XXX-XXXX</span>
+        <span><i class="fa-solid fa-envelope"></i> support@mediscan.com</span>
+        <div class="lang">
+            <span>EN</span><span>HI</span><span>GU</span>
+        </div>
     </div>
 
-    <nav>
-        <a href="/index" class="nav-link active"><i class="fa fa-home"></i> Home</a>
-        <a href="/about" class="nav-link"><i class="fa fa-circle-info"></i> About Us</a>
-        <a href="/search" class="nav-link"><i class="fa fa-search"></i> Medicine Search</a>
-        <a href="/history" class="nav-link"><i class="fa fa-clock-rotate-left"></i> Search History </a>
-        <a href="/contact" class="nav-link"><i class="fa fa-cart-shopping"></i> Contact</a>
-    </nav>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-capsules"></i>
+            <span>MediScan<br><small>PharmaInsight</small></span>
+        </div>
 
-    <div class="auth">
-        <a href="/login" class="login"><i class="fa fa-sign-in-alt"></i> Login</a>
-        <a href="/register" class="register"><i class="fa fa-user-plus"></i> Register</a>
-        <a href="/cart" class="cart"><i class="fa fa-cart-shopping"></i></a>
-    </div>
-</header>
+        <button class="menu-toggle"><i class="fa fa-bars"></i></button>
+
+        <nav>
+            <a href="/index" class="nav-link active"><i class="fa fa-home"></i> Home</a>
+            <a href="/about" class="nav-link"><i class="fa fa-circle-info"></i> About Us</a>
+            <a href="/search" class="nav-link"><i class="fa fa-search"></i> Medicine Search</a>
+            <a href="/history" class="nav-link"><i class="fa fa-clock-rotate-left"></i> Search History </a>
+            <a href="/contact" class="nav-link"><i class="fa fa-cart-shopping"></i> Contact</a>
+        </nav>
+
+        <div class="auth">
+            <a href="/login" class="login"><i class="fa fa-sign-in-alt"></i> Login</a>
+            <a href="/register" class="register"><i class="fa fa-user-plus"></i> Register</a>
+            <a href="/account" class="icon-btn" title="Account"><i class="fa fa-user"></i></a>
+        </div>
+    </header>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('nav');
+
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+    </script>
+</body>

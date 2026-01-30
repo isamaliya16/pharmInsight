@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* ================= RESET ================= */
 *{
     margin:0;
     padding:0;
@@ -21,7 +20,6 @@ body{
     color:#222;
 }
 
-/* ================= CONTAINER ================= */
 .container{
     max-width:900px;
     margin:80px auto;
@@ -29,7 +27,6 @@ body{
     padding:0 20px;
 }
 
-/* ================= HEADER ================= */
 h1{
     font-size:34px;
     margin-bottom:10px;
@@ -40,7 +37,7 @@ h1{
     margin-bottom:30px;
 }
 
-/* ================= TABS ================= */
+/* TABS */
 .tabs{
     display:flex;
     justify-content:center;
@@ -66,7 +63,7 @@ h1{
     border-color:#2b7cff;
 }
 
-/* ================= SEARCH BOX ================= */
+/* SEARCH BOX */
 .search-box{
     background:#fff;
     padding:30px;
@@ -87,35 +84,11 @@ h1{
     margin-top:15px;
     width:100%;
     padding:14px;
-    background:#9cc7f5;
+    background:#2b7cff;
+    color:#fff;
     border:none;
     border-radius:10px;
     font-size:15px;
-    cursor:pointer;
-}
-
-/* IMAGE UPLOAD */
-.upload-area{
-    border:2px dashed #bcd3f5;
-    padding:40px;
-    border-radius:14px;
-    color:#555;
-}
-
-.upload-area i{
-    font-size:26px;
-    color:#2b7cff;
-    margin-bottom:10px;
-}
-
-.upload-btn{
-    margin-top:15px;
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #2b7cff;
-    background:#fff;
-    color:#2b7cff;
     cursor:pointer;
 }
 
@@ -137,7 +110,7 @@ h1{
     margin:0 auto 15px;
 }
 
-/* ================= POPULAR ================= */
+/* POPULAR */
 .popular{
     margin-top:25px;
     font-size:14px;
@@ -150,7 +123,7 @@ h1{
     cursor:pointer;
 }
 
-/* ================= BOTTOM INFO ================= */
+/* INFO */
 .info{
     margin-top:70px;
     opacity:.8;
@@ -162,11 +135,7 @@ h1{
     margin-bottom:10px;
 }
 
-/* ================= HIDE ================= */
-.hide{display:none;}
-
-
-/* ================= RESULT CARD ================= */
+/* RESULT */
 .result {
     margin-top: 40px;
     background: #ffffff;
@@ -174,31 +143,8 @@ h1{
     border-radius: 18px;
     box-shadow: 0 20px 45px rgba(0,0,0,0.08);
     text-align: left;
-    animation: fadeIn 0.6s ease;
 }
 
-.result h2 {
-    font-size: 26px;
-    color: #2b7cff;
-    margin-bottom: 10px;
-}
-
-.result p {
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.result h3 {
-    margin-top: 25px;
-    font-size: 18px;
-    color: #111;
-    border-left: 4px solid #2b7cff;
-    padding-left: 10px;
-}
-
-/* ================= INFO GRID ================= */
 .meta {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -213,7 +159,6 @@ h1{
     font-size: 14px;
 }
 
-/* ================= ERROR ================= */
 .error {
     margin-top: 25px;
     padding: 15px;
@@ -223,45 +168,34 @@ h1{
     font-weight: 500;
 }
 
-/* ================= ANIMATION ================= */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+.hide{display:none;}
 </style>
 </head>
 
 <body>
-    
-    
+
 {% include "header.html" %}
 
 <div class="container">
 
-    <h1>Medicine Search</h1>
-    <p class="subtitle">
-        Search using text, image, or voice to find complete medicine information
-    </p>
+<h1>Medicine Search</h1>
+<p class="subtitle">
+    Search using text or voice to find complete medicine information
+</p>
 
-    <!-- TABS -->
-    <div class="tabs">
-        <div class="tab active" onclick="showTab('text')">
-            <i class="fa fa-search"></i> Text Search
-        </div>
-        <div class="tab" onclick="showTab('image')">
-            <i class="fa fa-camera"></i> Image Upload
-        </div>
-        <div class="tab" onclick="showTab('voice')">
-            <i class="fa fa-microphone"></i> Voice Input
-        </div>
+<!-- TABS -->
+<div class="tabs">
+    <div class="tab active" onclick="showTab('text', event)">
+    <i class="fa fa-search"></i> Text Search
     </div>
+    <div class="tab" onclick="showTab('voice', event)">
+        <i class="fa fa-microphone"></i> Voice Input
+    </div>
+</div>
 
-    <!-- SEARCH BOX -->
-    <div class="search-box">
-
-        <!-- TEXT -->
-        <form method="POST">
+<div class="search-box">
+<!-- TEXT -->
+    <form method="POST">
         <div id="text" class="text-search">
             <input type="text" name="medicine" placeholder="Enter medicine name (e.g., Paracetamol, Aspirin...)" required>
             <button type='submit' class="search-btn" onclick="searchMedicine()">
@@ -294,145 +228,115 @@ h1{
                 <input type="hidden" name="medicine" id="voiceInput">
             </form>
         </div>
-         
-   
-
-
-    <!-- POPULAR -->
-    <div class="popular">
-        Popular searches:
-        <span>Paracetamol</span>
-        <span>Aspirin</span>
-        <span>Amoxicillin</span>
-        <span>Ibuprofen</span>
-        <span>Cetirizine</span>
-    </div>
-
-    <!-- INFO -->
-    <div class="info">
-        <i class="fa fa-pills"></i>
-        <h3>Start Your Search</h3>
-        <p>
-            Enter a medicine name, upload an image, or use voice input to<br>
-            get complete information
-        </p>
-    </div>
-
-
-
-
-    <!-- ERROR -->
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-
-    <!-- RESULT -->
-   <!-- ERROR MESSAGE -->
-{% if error %}
-<div class="error">
-    ⚠️ {{ error }}
+    </form>
 </div>
+
+
+<div class="popular">
+    Popular searches:
+    <span>Paracetamol</span>
+    <span>Aspirin</span>
+    <span>Amoxicillin</span>
+    <span>Ibuprofen</span>
+    <span>Cetirizine</span>
+</div>
+
+{% if error %}
+<div class="error">⚠️ {{ error }}</div>
 {% endif %}
 
-<!-- MEDICINE RESULT -->
 {% if medicine %}
 <div class="result">
 
-    <!-- TITLE -->
-    <h2>💊 {{ medicine.brand }}</h2>
+    <h2>💊 {{ medicine.brand_name }}</h2>
 
-    <!-- BASIC DETAILS -->
+    <!-- 🔹 Basic Info -->
     <div class="meta">
-        <div>
-            <b>Generic Name</b><br>
-            {{ medicine.generic }}
-        </div>
-        <div>
-            <b>Manufacturer</b><br>
-            {{ medicine.manufacturer }}
-        </div>
-        <div>
-            <b>Route of Administration</b><br>
-            {{ medicine.route }}
-        </div>
+        <div><b>Generic Name</b><br>{{ medicine.generic_name }}</div>
+        <div><b>Substance</b><br>{{ medicine.substance_name }}</div>
+        <div><b>Manufacturer</b><br>{{ medicine.manufacturer }}</div>
+        <div><b>Product Type</b><br>{{ medicine.product_type }}</div>
+        <div><b>Route</b><br>{{ medicine.route }}</div>
+        <div><b>Dosage Form</b><br>{{ medicine.dosage_form }}</div>
     </div>
 
-    <!-- PURPOSE -->
-    <h3>📌 Purpose</h3>
-    <p>
-        {{ medicine.purpose }}
-    </p>
+    <!-- 🔹 Medical Usage -->
+    <h3>🩺 Purpose</h3>
+    <p>{{ medicine.purpose }}</p>
 
-    <!-- USES -->
-    <h3>🩺 Uses</h3>
-    <p>
-        {{ medicine.uses }}
-    </p>
+    <h3>📌 Uses / Indications</h3>
+    <p>{{ medicine.indications_and_usage }}</p>
 
-    <!-- DOSAGE -->
-    <h3>💉 Dosage & Administration</h3>
-    <p>
-        {{ medicine.dosage }}
-    </p>
+    <h3>💊 Dosage & Administration</h3>
+    <p>{{ medicine.dosage_and_administration }}</p>
 
-    <!-- WARNINGS -->
-    <h3>⚠️ Warnings & Precautions</h3>
-    <p>
-        {{ medicine.warnings }}
-    </p>
+    <!-- 🔹 Safety -->
+    <h3>⚠️ Warnings</h3>
+    <p>{{ medicine.warnings }}</p>
 
-    <!-- SIDE EFFECTS -->
-    <h3>❗ Side Effects</h3>
-    <p>
-        {{ medicine.side_effects }}
-    </p>
+    {% if medicine.boxed_warning != "N/A" %}
+    <h3>🚨 Boxed Warning</h3>
+    <p>{{ medicine.boxed_warning }}</p>
+    {% endif %}
 
-    <!-- STORAGE -->
-    <h3>📦 Storage Instructions</h3>
-    <p>
-        {{ medicine.storage }}
-    </p>
+    <h3>⛔ Contraindications</h3>
+    <p>{{ medicine.contraindications }}</p>
 
-    <!-- OPTIONAL EXTRA INFO -->
-    {% if medicine.drug_interactions %}
+    <h3>🤒 Side Effects</h3>
+    <p>{{ medicine.adverse_reactions }}</p>
+
     <h3>🔄 Drug Interactions</h3>
-    <p>
-        {{ medicine.drug_interactions }}
-    </p>
-    {% endif %}
+    <p>{{ medicine.drug_interactions }}</p>
 
-    {% if medicine.overdose %}
-    <h3>🚨 Overdose Information</h3>
-    <p>
-        {{ medicine.overdose }}
-    </p>
-    {% endif %}
+    <h3>☠️ Overdose</h3>
+    <p>{{ medicine.overdosage }}</p>
 
-    <!-- DISCLAIMER -->
-    <div style="margin-top:30px; font-size:13px; color:#666;">
-        ⚕️ <b>Disclaimer:</b> This information is for educational purposes only.  
-        Always consult a qualified doctor or pharmacist before using any medicine.
+    <!-- 🔹 Special Population -->
+    <h3>🤰 Pregnancy</h3>
+    <p>{{ medicine.pregnancy }}</p>
+
+    <h3>🍼 Lactation</h3>
+    <p>{{ medicine.lactation }}</p>
+
+    <h3>👶 Pediatric Use</h3>
+    <p>{{ medicine.pediatric_use }}</p>
+
+    <h3>👴 Geriatric Use</h3>
+    <p>{{ medicine.geriatric_use }}</p>
+
+    <!-- 🔹 Pharmacology -->
+    <h3>🧬 Mechanism of Action</h3>
+    <p>{{ medicine.mechanism_of_action }}</p>
+
+    <h3>⚙️ Pharmacodynamics</h3>
+    <p>{{ medicine.pharmacodynamics }}</p>
+
+    <h3>🔬 Pharmacokinetics</h3>
+    <p>{{ medicine.pharmacokinetics }}</p>
+
+    <!-- 🔹 Storage -->
+    <h3>📦 Storage & Handling</h3>
+    <p>{{ medicine.storage_and_handling }}</p>
+
+    <!-- 🔹 Regulatory -->
+    <div class="meta">
+        <div><b>DEA Schedule</b><br>{{ medicine.dea_schedule }}</div>
+        <div><b>Application No.</b><br>{{ medicine.application_number }}</div>
+        <div><b>SPL ID</b><br>{{ medicine.spl_id }}</div>
+        <div><b>Last Updated</b><br>{{ medicine.last_updated }}</div>
     </div>
+
+    <p class="disclaimer">
+        ⚠️ <b>Disclaimer:</b> This information is for educational purposes only.
+        Always consult a qualified healthcare professional before using any medication.
+    </p>
 
 </div>
 {% endif %}
 
-
-</div>
-
 <script>
-function showTab(tab){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    event.target.closest(".tab").classList.add("active");
 
-    document.getElementById("text").classList.add("hide");
-    document.getElementById("image").classList.add("hide");
-    document.getElementById("voice").classList.add("hide");
-
-    document.getElementById(tab).classList.remove("hide");
-}
-
-
+    
 function showTab(tab){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     event.target.classList.add('active');
@@ -459,7 +363,7 @@ function startVoice(){
         document.getElementById("voiceInput").value = text;
         document.getElementById("voiceForm").submit();
     };
-}
+}   
 </script>
 
 </body>
