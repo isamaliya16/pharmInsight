@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Medicine Reviews | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:1060px;margin:0 auto;padding:40px 20px;}
+.page-head{margin-bottom:28px;}
+.page-head h1{font-size:26px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:4px;}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:22px;}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}}
+.card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.05);margin-bottom:18px;}
+.card h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.card h3 i{color:#1e88e5;}
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:12px;font-weight:700;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;outline:none;font-family:inherit;transition:.2s;}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:#1e88e5;}
+.fg textarea{height:90px;resize:vertical;}
+.star-row{display:flex;gap:6px;margin-bottom:12px;}
+.star{font-size:28px;cursor:pointer;color:#e2e8f0;transition:.15s;line-height:1;}
+.star.lit,.star:hover~.star,.star:hover{color:#f59e0b;}
+.btn{width:100%;padding:12px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(30,136,229,.3);}
+.msg-success{background:#f0fdf4;border:1.5px solid #86efac;color:#15803d;padding:10px 14px;border-radius:9px;font-size:13px;margin-bottom:14px;}
+/* review card */
+.review-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:13px;padding:16px;margin-bottom:12px;transition:.2s;}
+.review-card:hover{border-color:#bae6fd;}
+.rv-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rv-avatar{width:36px;height:36px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;}
+.rv-name{font-weight:700;font-size:14px;}
+.rv-med{font-size:12px;color:#64748b;}
+.rv-stars{color:#f59e0b;font-size:14px;margin-left:auto;}
+.rv-text{font-size:13.5px;color:#475569;line-height:1.6;}
+.rv-date{font-size:11px;color:#94a3b8;margin-top:6px;}
+.del-btn{background:#fff0f0;color:#ef4444;border:1px solid #fca5a5;padding:4px 10px;border-radius:7px;cursor:pointer;font-size:12px;}
+.avg-card{display:flex;align-items:center;gap:12px;padding:12px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;margin-bottom:8px;}
+.avg-name{font-weight:700;font-size:14px;flex:1;}
+.avg-stars{color:#f59e0b;}
+.avg-cnt{font-size:12px;color:#92400e;}
+.tabs-row{display:flex;gap:4px;border-bottom:1.5px solid #e2e8f0;margin-bottom:16px;}
+.tab-btn{padding:9px 16px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:500;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:.2s;}
+.tab-btn.active{color:#1e88e5;border-bottom-color:#1e88e5;}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-star" style="color:#f59e0b;margin-right:8px;"></i>Medicine Reviews & Ratings</h1>
+    <p>Share your experience and read reviews from other users</p>
+  </div>
+
+  <div class="layout">
+    <!-- WRITE REVIEW -->
+    <div>
+      <div class="card">
+        <h3><i class="fa fa-pen"></i>Write a Review</h3>
+        {% if message=='added' %}<div class="msg-success"><i class="fa fa-check"></i> Review added!</div>
+        {% elif message=='updated' %}<div class="msg-success"><i class="fa fa-check"></i> Review updated!</div>{% endif %}
+        <form method="POST">
+          <input type="hidden" name="action" value="add">
+          <div class="fg"><label>Medicine Name</label><input type="text" name="medicine_name" placeholder="e.g. Paracetamol" required></div>
+          <div class="fg">
+            <label>Rating</label>
+            <div class="star-row" id="starRow">
+              {% for i in range(1,6) %}<span class="star" data-val="{{ i }}" onclick="setRating({{ i }})">★</span>{% endfor %}
+            </div>
+            <input type="hidden" name="rating" id="ratingInput" value="5">
+          </div>
+          <div class="fg"><label>Your Experience</label><textarea name="review_text" placeholder="Share your experience with this medicine..."></textarea></div>
+          <button class="btn" type="submit"><i class="fa fa-star"></i> Submit Review</button>
+        </form>
+      </div>
+
+      <!-- Avg Ratings -->
+      {% if avg_ratings %}
+      <div class="card">
+        <h3><i class="fa fa-chart-bar"></i>Average Ratings</h3>
+        {% for a in avg_ratings %}
+        <div class="avg-card">
+          <div class="avg-name">{{ a['medicine_name'] }}</div>
+          <div class="avg-stars">{{ '★' * a['avg']|int }}{{ '☆' * (5 - a['avg']|int) }}</div>
+          <div style="font-weight:800;color:#d97706;">{{ a['avg'] }}</div>
+          <div class="avg-cnt">({{ a['cnt'] }})</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- REVIEWS LIST -->
+    <div>
+      <div class="tabs-row">
+        <button class="tab-btn active" onclick="showTab('all',this)">All Reviews ({{ all_reviews|length }})</button>
+        <button class="tab-btn" onclick="showTab('mine',this)">My Reviews ({{ my_reviews|length }})</button>
+      </div>
+
+      <div id="tab-all" class="tab-pane active">
+        {% for r in all_reviews %}
+        <div class="review-card">
+          <div class="rv-header">
+            <div class="rv-avatar">{{ r['user_name'][0].upper() }}</div>
+            <div><div class="rv-name">{{ r['user_name'] }}</div><div class="rv-med">{{ r['medicine_name'] }}</div></div>
+            <div class="rv-stars">{{ '★' * r['rating'] }}{{ '☆' * (5-r['rating']) }}</div>
+          </div>
+          {% if r['review_text'] %}<div class="rv-text">{{ r['review_text'] }}</div>{% endif %}
+          <div class="rv-date">{{ r['created_at'][:10] if r['created_at'] else '' }}</div>
+        </div>
+        {% else %}<p style="color:#94a3b8;text-align:center;padding:30px;">No reviews yet. Be the first!</p>{% endfor %}
+      </div>
+
+      <div id="tab-mine" class="tab-pane">
+        {% for r in my_reviews %}
+        <div class="review-card">
+          <div class="rv-header">
+            <div class="rv-med" style="font-size:16px;font-weight:700;color:#1a202c;">{{ r['medicine_name'] }}</div>
+            <div class="rv-stars">{{ '★' * r['rating'] }}{{ '☆' * (5-r['rating']) }}</div>
+          </div>
+          {% if r['review_text'] %}<div class="rv-text">{{ r['review_text'] }}</div>{% endif %}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            <div class="rv-date">{{ r['created_at'][:10] if r['created_at'] else '' }}</div>
+            <form method="POST" style="display:inline;">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="{{ r['id'] }}">
+              <button class="del-btn" onclick="return confirm('Delete this review?')"><i class="fa fa-trash"></i></button>
+            </form>
+          </div>
+        </div>
+        {% else %}<p style="color:#94a3b8;text-align:center;padding:30px;">You haven't written any reviews yet.</p>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% include "footer.html" %}
+<script>
+function setRating(val){
+  document.getElementById("ratingInput").value=val;
+  document.querySelectorAll(".star").forEach((s,i)=>{
+    s.classList.toggle("lit", i < val);
+  });
+}
+setRating(5);
+
+function showTab(name,btn){
+  document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  btn.classList.add("active");
+}
+</script>
+</body></html>

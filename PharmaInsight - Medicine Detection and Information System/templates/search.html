@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medicine Search | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{background:#f7fafc;color:#1a202c;}
+.container{max-width:900px;margin:50px auto;padding:0 20px;}
+h1{font-size:30px;font-weight:700;margin-bottom:6px;}
+.sub{color:#64748b;margin-bottom:28px;}
+.tabs{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+.tab{padding:9px 16px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;transition:.2s;}
+.tab.active,.tab:hover{background:#1e88e5;color:#fff;border-color:#1e88e5;}
+.search-box{background:#fff;padding:28px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.07);}
+.text-search input{width:100%;padding:13px 16px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:15px;outline:none;transition:.2s;}
+.text-search input:focus{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.1);}
+.search-btn{margin-top:13px;width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;}
+.search-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,.3);}
+.voice-area{padding:36px;text-align:center;}
+.mic{width:78px;height:78px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px;cursor:pointer;box-shadow:0 8px 20px rgba(30,136,229,.35);transition:.3s;}
+.mic:hover{transform:scale(1.08);}
+.mic.listening{animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);box-shadow:0 0 0 12px rgba(30,136,229,.2);}}
+.popular{margin-top:20px;font-size:13px;color:#64748b;}
+.popular span{margin:0 6px;color:#1e88e5;cursor:pointer;font-weight:500;}
+.popular span:hover{text-decoration:underline;}
+.hide{display:none;}
+/* ERROR */
+.error-box{margin-top:22px;padding:14px 18px;background:#fff5f5;color:#c53030;border-radius:12px;border-left:4px solid #fc8181;font-size:14px;}
+/* RESULT */
+.result{margin-top:36px;background:#fff;padding:28px;border-radius:18px;box-shadow:0 15px 40px rgba(0,0,0,.08);}
+.result h2{font-size:24px;font-weight:700;margin-bottom:16px;color:#0f172a;display:flex;align-items:center;gap:10px;}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0 20px;}
+.meta-item{background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;}
+.meta-item b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:4px;}
+.meta-item span{font-size:14px;color:#1a202c;}
+.section-title{font-size:15px;font-weight:700;margin:18px 0 6px;color:#1e88e5;display:flex;align-items:center;gap:7px;}
+.section-body{font-size:14px;color:#475569;line-height:1.7;background:#f8fafc;padding:12px 14px;border-radius:10px;}
+.warning-box{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 14px;border-radius:10px;margin:14px 0;}
+.warning-box .section-title{color:#b45309;}
+.warning-box .section-body{background:transparent;padding:0;margin-top:6px;}
+.disclaimer{margin-top:20px;padding:12px 14px;background:#f0f9ff;border-radius:10px;font-size:13px;color:#0369a1;border-left:4px solid #38bdf8;}
+</style>
+</head>
+<body>
+{% include "header.html" %}
+
+<div class="container">
+  <h1>Medicine Search</h1>
+  <p class="sub">Search by text or voice to get complete FDA-verified medicine information</p>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" id="tab-text" onclick="showTab('text')"><i class="fa fa-search"></i> Text Search</div>
+    <div class="tab"        id="tab-voice" onclick="showTab('voice')"><i class="fa fa-microphone"></i> Voice Input</div>
+  </div>
+
+  <div class="search-box">
+    <!-- TEXT TAB — Bug fix: was wrapping voice form inside text form (invalid HTML) -->
+    <div id="pane-text" class="text-search">
+      <form method="POST">
+        <input type="text" name="medicine" id="medInput"
+               placeholder="e.g. Paracetamol, Ibuprofen, Amoxicillin…"
+               value="{{ request.form.get('medicine','') }}" autocomplete="off">
+        <button type="submit" class="search-btn"><i class="fa fa-search"></i> Search Medicine</button>
+      </form>
+    </div>
+
+    <!-- VOICE TAB -->
+    <div id="pane-voice" class="hide voice-area">
+      <div class="mic" id="micBtn" onclick="startVoice()"><i class="fa fa-microphone"></i></div>
+      <p id="voiceText"><b>Tap to Speak</b></p>
+      <small style="color:#94a3b8">Say the medicine name, e.g. "Paracetamol"</small>
+      <form method="POST" id="voiceForm">
+        <input type="hidden" name="medicine" id="voiceInput">
+      </form>
+    </div>
+  </div>
+
+  <div class="popular">
+    Popular:
+    <span onclick="quickSearch('Paracetamol')">Paracetamol</span>
+    <span onclick="quickSearch('Aspirin')">Aspirin</span>
+    <span onclick="quickSearch('Amoxicillin')">Amoxicillin</span>
+    <span onclick="quickSearch('Ibuprofen')">Ibuprofen</span>
+    <span onclick="quickSearch('Cetirizine')">Cetirizine</span>
+  </div>
+
+  {% if error %}
+  <div class="error-box"><i class="fa fa-triangle-exclamation"></i> {{ error }}</div>
+  {% endif %}
+
+  {% if medicine %}
+  <div class="result">
+    <h2><i class="fa fa-pills" style="color:#1e88e5"></i> {{ medicine.brand_name }}</h2>
+
+    <div class="meta">
+      <div class="meta-item"><b>Generic Name</b><span>{{ medicine.generic_name }}</span></div>
+      <div class="meta-item"><b>Substance</b><span>{{ medicine.substance_name }}</span></div>
+      <div class="meta-item"><b>Manufacturer</b><span>{{ medicine.manufacturer }}</span></div>
+      <div class="meta-item"><b>Product Type</b><span>{{ medicine.product_type }}</span></div>
+      <div class="meta-item"><b>Route</b><span>{{ medicine.route }}</span></div>
+      <div class="meta-item"><b>Dosage Form</b><span>{{ medicine.dosage_form }}</span></div>
+    </div>
+
+    {% if medicine.purpose != 'N/A' %}
+    <div class="section-title"><i class="fa fa-bullseye"></i> Purpose</div>
+    <div class="section-body">{{ medicine.purpose }}</div>
+    {% endif %}
+
+    <div class="section-title"><i class="fa fa-stethoscope"></i> Uses / Indications</div>
+    <div class="section-body">{{ medicine.indications_and_usage }}</div>
+
+    <div class="section-title"><i class="fa fa-syringe"></i> Dosage &amp; Administration</div>
+    <div class="section-body">{{ medicine.dosage_and_administration }}</div>
+
+    <div class="warning-box">
+      <div class="section-title"><i class="fa fa-triangle-exclamation"></i> Warnings</div>
+      <div class="section-body">{{ medicine.warnings }}</div>
+    </div>
+
+    {% if medicine.boxed_warning != 'N/A' %}
+    <div class="warning-box" style="border-left-color:#ef4444;background:#fff5f5;">
+      <div class="section-title" style="color:#dc2626;"><i class="fa fa-radiation"></i> Boxed Warning</div>
+      <div class="section-body">{{ medicine.boxed_warning }}</div>
+    </div>
+    {% endif %}
+
+    <div class="section-title"><i class="fa fa-ban"></i> Contraindications</div>
+    <div class="section-body">{{ medicine.contraindications }}</div>
+
+    <div class="section-title"><i class="fa fa-face-frown"></i> Side Effects</div>
+    <div class="section-body">{{ medicine.adverse_reactions }}</div>
+
+    <div class="section-title"><i class="fa fa-rotate"></i> Drug Interactions</div>
+    <div class="section-body">{{ medicine.drug_interactions }}</div>
+
+    <div class="section-title"><i class="fa fa-skull-crossbones"></i> Overdose</div>
+    <div class="section-body">{{ medicine.overdosage }}</div>
+
+    <div class="meta" style="margin-top:16px;">
+      <div class="meta-item"><b>Pregnancy</b><span>{{ medicine.pregnancy[:120] }}…</span></div>
+      <div class="meta-item"><b>Lactation</b><span>{{ medicine.lactation[:120] }}…</span></div>
+      <div class="meta-item"><b>Pediatric Use</b><span>{{ medicine.pediatric_use[:120] }}…</span></div>
+      <div class="meta-item"><b>Geriatric Use</b><span>{{ medicine.geriatric_use[:120] }}…</span></div>
+    </div>
+
+    <div class="section-title"><i class="fa fa-dna"></i> Mechanism of Action</div>
+    <div class="section-body">{{ medicine.mechanism_of_action }}</div>
+
+    <div class="section-title"><i class="fa fa-box-archive"></i> Storage &amp; Handling</div>
+    <div class="section-body">{{ medicine.storage_and_handling }}</div>
+
+    <div class="meta" style="margin-top:16px;">
+      <div class="meta-item"><b>DEA Schedule</b><span>{{ medicine.dea_schedule }}</span></div>
+      <div class="meta-item"><b>Application No.</b><span>{{ medicine.application_number }}</span></div>
+      <div class="meta-item"><b>Last Updated</b><span>{{ medicine.last_updated }}</span></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Disclaimer:</strong> This information is sourced from the US FDA and is for educational purposes only.
+      Always consult a qualified healthcare professional before taking any medication.
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% include "footer.html" %}
+
+<script>
+function showTab(t){
+  document.getElementById("pane-text").classList.add("hide");
+  document.getElementById("pane-voice").classList.add("hide");
+  document.getElementById("pane-"+t).classList.remove("hide");
+  document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
+  document.getElementById("tab-"+t).classList.add("active");
+}
+
+function quickSearch(name){
+  document.getElementById("medInput").value = name;
+  document.getElementById("medInput").closest("form").submit();
+}
+
+function startVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ alert("Voice recognition not supported in this browser."); return; }
+  const r = new SR();
+  r.lang = "en-US";
+  r.start();
+  const btn = document.getElementById("micBtn");
+  const txt = document.getElementById("voiceText");
+  btn.classList.add("listening");
+  txt.innerHTML = "<b>Listening…</b>";
+  r.onresult = e => {
+    const said = e.results[0][0].transcript;
+    txt.innerHTML = "You said: <b>" + said + "</b>";
+    btn.classList.remove("listening");
+    document.getElementById("voiceInput").value = said;
+    document.getElementById("voiceForm").submit();
+  };
+  r.onerror = () => {
+    btn.classList.remove("listening");
+    txt.innerHTML = "<b>Error. Please try again.</b>";
+  };
+}
+</script>
+</body>
+</html>

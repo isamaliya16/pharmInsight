@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Drug Interaction Checker | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:820px;margin:0 auto;padding:40px 20px;}
+.page-head{text-align:center;margin-bottom:36px;}
+.page-head h1{font-size:28px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:6px;}
+.card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:24px;}
+.form-row{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;}
+.vs{font-weight:800;font-size:18px;color:#94a3b8;text-align:center;}
+.finput{width:100%;padding:13px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;font-family:inherit;transition:.2s;}
+.finput:focus{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.1);}
+.btn{margin-top:18px;width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,.3);}
+/* Result */
+.result-card{border-radius:16px;padding:28px;margin-bottom:24px;}
+.result-card.SEVERE{background:#fff5f5;border:2px solid #fca5a5;}
+.result-card.MODERATE{background:#fffbeb;border:2px solid #fde68a;}
+.result-card.LOW{background:#f0fdf4;border:2px solid #86efac;}
+.sev-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:14px;}
+.sev-badge.SEVERE{background:#fee2e2;color:#dc2626;}
+.sev-badge.MODERATE{background:#fef3c7;color:#d97706;}
+.sev-badge.LOW{background:#dcfce7;color:#16a34a;}
+.result-drugs{font-size:22px;font-weight:800;margin-bottom:10px;}
+.result-summary{font-size:15px;color:#374151;line-height:1.7;}
+.disclaimer{background:#f0f9ff;border-left:4px solid #38bdf8;padding:12px 16px;border-radius:10px;font-size:13px;color:#0369a1;margin-top:20px;}
+.history-table{width:100%;border-collapse:collapse;}
+.history-table th{background:#f8fafc;padding:10px 14px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:#64748b;text-align:left;border-bottom:1.5px solid #e2e8f0;}
+.history-table td{padding:11px 14px;font-size:13.5px;border-bottom:1px solid #f1f5f9;}
+.history-table tr:last-child td{border-bottom:none;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-triangle-exclamation" style="color:#ef4444"></i> Drug Interaction Checker</h1>
+    <p>Enter two medicine names to check for potential interactions and safety risks</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+      <div class="form-row">
+        <input class="finput" type="text" name="drug1" placeholder="Medicine 1 (e.g. Warfarin)" required value="{{ request.form.get('drug1','') }}">
+        <div class="vs">VS</div>
+        <input class="finput" type="text" name="drug2" placeholder="Medicine 2 (e.g. Aspirin)" required value="{{ request.form.get('drug2','') }}">
+      </div>
+      <button class="btn" type="submit"><i class="fa fa-magnifying-glass"></i> Check Interaction</button>
+    </form>
+  </div>
+
+  {% if result %}
+  <div class="result-card {{ result.severity }}">
+    <span class="sev-badge {{ result.severity }}">
+      <i class="fa fa-{% if result.severity=='SEVERE' %}radiation{% elif result.severity=='MODERATE' %}triangle-exclamation{% else %}circle-check{% endif %}"></i>
+      {{ result.severity }} INTERACTION
+    </span>
+    <div class="result-drugs">{{ result.drug1 }} + {{ result.drug2 }}</div>
+    <div class="result-summary">{{ result.summary }}</div>
+    <div class="disclaimer"><i class="fa fa-stethoscope"></i> <strong>Always consult your doctor or pharmacist</strong> before combining medications. This tool provides general guidance only.</div>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;"><i class="fa fa-clock-rotate-left" style="color:#1e88e5;margin-right:7px;"></i>Common Interactions Reference</h3>
+    <table class="history-table">
+      <thead><tr><th>Drug 1</th><th>Drug 2</th><th>Severity</th><th>Risk</th></tr></thead>
+      <tbody>
+        {% set ref_data = [
+          ('Warfarin','Aspirin','SEVERE','Serious bleeding risk'),
+          ('Simvastatin','Amiodarone','SEVERE','Muscle damage risk'),
+          ('Sildenafil','Nitrates','SEVERE','Dangerous BP drop'),
+          ('Metformin','Alcohol','MODERATE','Lactic acidosis risk'),
+          ('Aspirin','Ibuprofen','MODERATE','GI bleed risk'),
+          ('Omeprazole','Clopidogrel','MODERATE','Reduced effectiveness'),
+        ] %}
+        {% for row in ref_data %}
+        <tr>
+          <td><strong>{{ row[0] }}</strong></td>
+          <td><strong>{{ row[1] }}</strong></td>
+          <td><span style="padding:3px 8px;font-size:11px;border-radius:20px;font-weight:700;{% if row[2]=='SEVERE' %}background:#fee2e2;color:#dc2626;{% else %}background:#fef3c7;color:#d97706;{% endif %}">{{ row[2] }}</span></td>
+          <td style="color:#64748b;font-size:13px;">{{ row[3] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include "footer.html" %}
+</body></html>

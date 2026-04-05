@@ -1,0 +1,45 @@
+========================================
+ PharmaInsight — How to Run
+========================================
+
+1. Install dependencies:
+   pip install -r requirements.txt
+
+2. Start the server:
+   python app.py
+
+3. Open browser:
+   http://localhost:5000
+
+========================================
+ All Pages & URLs
+========================================
+  /              Home
+  /search        Medicine Search (FDA live data)
+  /history       Search History
+  /account       My Account
+  /about         About Us
+  /contact       Contact Us
+  /login         Login
+  /register      Register
+  /logout        Logout
+  /admin         Admin Dashboard (admin only)
+
+========================================
+ 10 New Features (login required)
+========================================
+  /interaction   Drug Interaction Checker
+  /reminders     Medicine Reminders & Scheduler
+  /prescription  Prescription OCR Extractor
+  /order         Order & Cart System
+  /comparator    Generic vs Brand Comparator
+  /symptoms      Symptom to Medicine Suggester
+  /dashboard     Personal Health Dashboard
+  /set-language  Multi-Language (EN/HI/GU)
+  /reviews       Medicine Reviews & Ratings
+  (chatbot)      AI MediBot — floating on every page
+
+========================================
+ Admin credentials printed in terminal
+ on first run only (never on website)
+========================================

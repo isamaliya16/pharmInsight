@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact Us | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{background:#f7fafc;color:#222;}
+.hero{text-align:center;padding:70px 20px 50px;background:linear-gradient(135deg,#eff6ff,#f0fffe);}
+.hero h1{font-size:38px;font-weight:700;}
+.hero span{color:#1e88e5;}
+.hero p{margin-top:10px;font-size:16px;color:#64748b;}
+.contact-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px;padding:60px 8%;max-width:1200px;margin:0 auto;}
+.info-cards{display:flex;flex-direction:column;gap:16px;}
+.info-card{background:#fff;padding:22px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.06);display:flex;gap:14px;align-items:flex-start;border:1.5px solid #e2e8f0;transition:.2s;}
+.info-card:hover{border-color:#1e88e5;transform:translateY(-2px);}
+.info-icon{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.info-card h4{font-size:14px;font-weight:700;margin-bottom:3px;}
+.info-card p{font-size:13px;color:#64748b;}
+.form-card{background:#fff;padding:32px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);border:1.5px solid #e2e8f0;}
+.form-card h3{font-size:20px;font-weight:700;margin-bottom:20px;}
+.success-msg{background:#f0fdf4;color:#15803d;border:1px solid #86efac;padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px;display:none;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;}
+.fg input,.fg textarea{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:14px;outline:none;font-family:inherit;transition:.2s;}
+.fg input:focus,.fg textarea:focus{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.1);}
+.fg textarea{resize:vertical;height:110px;}
+.submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,.3);}
+.map-section{padding:0 8% 70px;}
+.map-section iframe{width:100%;height:320px;border:none;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);}
+</style>
+</head>
+<body>
+{% include "header.html" %}
+
+<section class="hero">
+  <h1>Contact <span>MediScan</span></h1>
+  <p>We're here to help you with medicine information and support</p>
+</section>
+
+<div class="contact-wrap">
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="info-icon"><i class="fa fa-location-dot"></i></div>
+      <div><h4>Our Location</h4><p>Ahmedabad, Gujarat, India</p></div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon"><i class="fa fa-envelope"></i></div>
+      <div><h4>Email Us</h4><p>support@mediscan.ai</p></div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon"><i class="fa fa-phone"></i></div>
+      <div><h4>Call Us</h4><p>+91 98765 43210</p></div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon"><i class="fa fa-clock"></i></div>
+      <div><h4>Working Hours</h4><p>Mon – Sat: 9:00 AM – 6:00 PM</p></div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3><i class="fa fa-paper-plane" style="color:#1e88e5;margin-right:8px;"></i>Send Us a Message</h3>
+
+    {# Bug fix: success indicator from query param #}
+    <div class="success-msg" id="successMsg">
+      <i class="fa fa-circle-check"></i> Message sent! We'll get back to you soon.
+    </div>
+
+    {# Bug fix: form was posting to /contact which crashed because contact_bp was not registered
+       and save_contact() didn't exist. Both are now fixed. #}
+    <form method="POST" action="/contact">
+      <div class="fg"><label>Your Name</label><input type="text" name="name" placeholder="Full name" required></div>
+      <div class="fg"><label>Email Address</label><input type="email" name="email" placeholder="you@example.com" required></div>
+      <div class="fg"><label>Subject</label><input type="text" name="subject" placeholder="How can we help?"></div>
+      <div class="fg"><label>Message</label><textarea name="message" placeholder="Your message…" required></textarea></div>
+      <button type="submit" class="submit-btn"><i class="fa fa-paper-plane"></i> Send Message</button>
+    </form>
+  </div>
+</div>
+
+<div class="map-section">
+  <iframe src="https://www.google.com/maps?q=Ahmedabad,Gujarat&output=embed" loading="lazy"></iframe>
+</div>
+
+{% include "footer.html" %}
+
+<script>
+// Show success banner when redirected back with ?msg=sent
+if(new URLSearchParams(window.location.search).get("msg") === "sent"){
+  document.getElementById("successMsg").style.display = "block";
+}
+</script>
+</body>
+</html>

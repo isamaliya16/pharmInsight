@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Access Denied | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+     background:linear-gradient(135deg,#fff1f2,#fef2f2);}
+.card{background:#fff;border-radius:20px;padding:52px 44px;max-width:480px;width:100%;
+      text-align:center;box-shadow:0 24px 60px rgba(239,68,68,.12);
+      border:1.5px solid #fecaca;}
+.shield{width:90px;height:90px;background:linear-gradient(135deg,#ef4444,#dc2626);
+        border-radius:50%;display:flex;align-items:center;justify-content:center;
+        font-size:38px;color:#fff;margin:0 auto 24px;
+        box-shadow:0 12px 30px rgba(239,68,68,.35);}
+h1{font-size:26px;font-weight:800;color:#0f172a;margin-bottom:10px;}
+.code{font-size:13px;font-weight:700;letter-spacing:2px;color:#ef4444;
+      text-transform:uppercase;margin-bottom:18px;}
+p{font-size:15px;color:#64748b;line-height:1.7;margin-bottom:28px;}
+.info-box{background:#fff8f8;border:1.5px solid #fecaca;border-radius:12px;
+          padding:16px 20px;margin-bottom:28px;text-align:left;}
+.info-box p{font-size:13.5px;color:#7f1d1d;margin:0;line-height:1.7;}
+.info-box strong{color:#dc2626;}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;
+     border-radius:10px;font-size:14px;font-weight:600;
+     text-decoration:none;transition:.25s;border:none;cursor:pointer;}
+.btn-primary{background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(30,136,229,.3);}
+.btn-outline{background:#fff;color:#64748b;border:1.5px solid #e2e8f0;}
+.btn-outline:hover{border-color:#1e88e5;color:#1e88e5;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="shield"><i class="fa fa-shield-halved"></i></div>
+
+  <div class="code">403 — Access Denied</div>
+  <h1>Admin Area Restricted</h1>
+  <p>You don't have permission to access the Admin Panel. This area is reserved exclusively for system administrators.</p>
+
+  <div class="info-box">
+    <p>
+      🔐 <strong>Admin Login:</strong> admin@pharmainsight.com<br>
+      Only the admin account can access this dashboard.<br>
+      Regular user accounts cannot enter this area.
+    </p>
+  </div>
+
+  <div class="btns">
+    <a href="/login" class="btn btn-primary"><i class="fa fa-sign-in-alt"></i> Login as Admin</a>
+    <a href="/"      class="btn btn-outline"><i class="fa fa-house"></i> Go Home</a>
+  </div>
+</div>
+</body>
+</html>

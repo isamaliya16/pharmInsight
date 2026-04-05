@@ -1,0 +1,119 @@
+{% set lang = session.get('lang','en') %}
+{% set T = {
+  'en': {'home':'Home','about':'About','search':'Search','history':'History',
+         'contact':'Contact','admin':'Admin','login':'Login','register':'Register',
+         'logout':'Logout','account':'Account'},
+  'hi': {'home':'होम','about':'हमारे बारे में','search':'खोज','history':'इतिहास',
+         'contact':'संपर्क','admin':'व्यवस्थापक','login':'लॉगिन','register':'रजिस्टर',
+         'logout':'लॉगआउट','account':'खाता'},
+  'gu': {'home':'હોમ','about':'અમારા વિશે','search':'શોધ','history':'ઇતિહાસ',
+         'contact':'સંપર્ક','admin':'એડમિન','login':'લૉગિન','register':'નોંધણી',
+         'logout':'લૉગઆઉટ','account':'ખાતું'}
+} %}
+{% set t = T[lang] %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#1e88e5;--s:#00bfa5;--dk:#0f172a;--gray:#64748b;--bg:#fff;--bdr:#e2e8f0;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+.top-bar{background:var(--dk);color:#fff;padding:7px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;}
+.top-bar i{color:var(--s);margin-right:5px;}
+.lang-btns{display:flex;gap:6px;align-items:center;}
+.lang-btn{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);transition:.2s;}
+.lang-btn.active,.lang-btn:hover{background:var(--s);color:#fff;border-color:var(--s);}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 5%;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.07);position:sticky;top:0;z-index:1000;flex-wrap:wrap;gap:8px;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;box-shadow:0 4px 12px rgba(30,136,229,.3);}
+.logo span{font-size:19px;font-weight:800;color:var(--dk);}
+.logo small{display:block;font-size:10px;color:var(--gray);font-weight:500;}
+nav{display:flex;flex-wrap:wrap;gap:2px;align-items:center;}
+nav a{color:var(--dk);text-decoration:none;font-weight:500;padding:7px 11px;border-radius:8px;font-size:13.5px;transition:.2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+nav a i{font-size:12px;}
+nav a:hover,nav a.active{color:var(--p);background:rgba(30,136,229,.08);}
+.auth{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.auth a{padding:7px 14px;border-radius:8px;font-weight:600;text-decoration:none;font-size:13px;transition:.2s;}
+.btn-login{border:2px solid var(--p);color:var(--p);}
+.btn-login:hover{background:var(--p);color:#fff;}
+.btn-register{background:linear-gradient(135deg,var(--p),var(--s));color:#fff;box-shadow:0 3px 10px rgba(30,136,229,.25);}
+.btn-register:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(30,136,229,.35);}
+.btn-logout{background:#fff0f0;color:#ef4444;border:1.5px solid #fca5a5;}
+.btn-logout:hover{background:#ef4444;color:#fff;}
+.user-chip{background:rgba(30,136,229,.1);color:var(--p);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:#475569;border-radius:8px;font-size:14px;text-decoration:none;border:1.5px solid var(--bdr);transition:.2s;}
+.icon-btn:hover{background:var(--p);color:#fff;border-color:var(--p);}
+.menu-toggle{display:none;font-size:20px;cursor:pointer;background:none;border:none;color:var(--dk);padding:6px;}
+/* Features mega row */
+.feat-bar{background:linear-gradient(135deg,#f8fafc,#f0f9ff);border-bottom:1px solid var(--bdr);padding:6px 5%;display:flex;gap:4px;flex-wrap:wrap;overflow-x:auto;}
+.feat-link{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12.5px;font-weight:600;text-decoration:none;color:var(--gray);border:1.5px solid transparent;transition:.2s;white-space:nowrap;}
+.feat-link:hover{background:#fff;border-color:var(--p);color:var(--p);box-shadow:0 2px 8px rgba(30,136,229,.12);}
+.feat-link i{font-size:11px;}
+@media(max-width:900px){nav{display:none;flex-direction:column;width:100%;}.nav.open{display:flex;}.menu-toggle{display:block;}.feat-bar{display:none;}}
+</style>
+
+<div class="top-bar">
+  <span><i class="fa fa-phone"></i>+91 1800-XXX-XXXX &nbsp;|&nbsp; <i class="fa fa-envelope"></i>support@mediscan.com</span>
+  <div class="lang-btns">
+    <span style="color:#94a3b8;font-size:11px;">LANG:</span>
+    <a href="/set-language/en" class="lang-btn {% if lang=='en' %}active{% endif %}">EN</a>
+    <a href="/set-language/hi" class="lang-btn {% if lang=='hi' %}active{% endif %}">HI</a>
+    <a href="/set-language/gu" class="lang-btn {% if lang=='gu' %}active{% endif %}">GU</a>
+  </div>
+</div>
+
+<header class="navbar">
+  <a href="/" class="logo">
+    <div class="logo-icon"><i class="fa-solid fa-capsules"></i></div>
+    <div><span>MediScan</span><small>PharmaInsight</small></div>
+  </a>
+
+  <button class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></button>
+
+  <nav id="mainNav">
+    <a href="/"        class="nav-link"><i class="fa fa-house"></i>{{ t.home }}</a>
+    <a href="/search"  class="nav-link"><i class="fa fa-search"></i>{{ t.search }}</a>
+    <a href="/history" class="nav-link"><i class="fa fa-clock-rotate-left"></i>{{ t.history }}</a>
+    <a href="/about"   class="nav-link"><i class="fa fa-circle-info"></i>{{ t.about }}</a>
+    <a href="/contact" class="nav-link"><i class="fa fa-envelope"></i>{{ t.contact }}</a>
+    {% if session.get('is_admin') %}
+    <a href="/admin"   class="nav-link"><i class="fa fa-gauge"></i>{{ t.admin }}</a>
+    {% endif %}
+  </nav>
+
+  <div class="auth">
+    {% if session.get('user_id') %}
+      <span class="user-chip"><i class="fa fa-user-circle"></i>{{ session.get('user_name','') }}</span>
+      <a href="/account"  class="icon-btn" title="{{ t.account }}"><i class="fa fa-user"></i></a>
+      <a href="/dashboard" class="icon-btn" title="My Dashboard"><i class="fa fa-chart-pie"></i></a>
+      <a href="/logout"   class="auth-link btn-logout" style="border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;text-decoration:none;"><i class="fa fa-sign-out-alt"></i>{{ t.logout }}</a>
+    {% else %}
+      <a href="/login"    class="auth-link btn-login"><i class="fa fa-sign-in-alt"></i>{{ t.login }}</a>
+      <a href="/register" class="auth-link btn-register"><i class="fa fa-user-plus"></i>{{ t.register }}</a>
+    {% endif %}
+  </div>
+</header>
+
+{% if session.get('user_id') %}
+<div class="feat-bar">
+  <a href="/interaction" class="feat-link"><i class="fa fa-triangle-exclamation"></i>Drug Interactions</a>
+  <a href="/reminders"   class="feat-link"><i class="fa fa-bell"></i>Reminders</a>
+  <a href="/prescription"class="feat-link"><i class="fa fa-file-medical"></i>Prescription OCR</a>
+  <a href="/order"       class="feat-link"><i class="fa fa-cart-shopping"></i>Order Medicines</a>
+  <a href="/comparator"  class="feat-link"><i class="fa fa-scale-balanced"></i>Generic Comparator</a>
+  <a href="/symptoms"    class="feat-link"><i class="fa fa-stethoscope"></i>Symptom Checker</a>
+  <a href="/dashboard"   class="feat-link"><i class="fa fa-chart-pie"></i>Health Dashboard</a>
+  <a href="/reviews"     class="feat-link"><i class="fa fa-star"></i>Reviews</a>
+</div>
+{% endif %}
+
+<script>
+document.getElementById("menuToggle").addEventListener("click",function(){
+  document.getElementById("mainNav").classList.toggle("open");
+});
+(function(){
+  const path=window.location.pathname;
+  document.querySelectorAll("nav a.nav-link").forEach(a=>{
+    const h=a.getAttribute("href");
+    if(h===path||(h!=="/"&&path.startsWith(h)))a.classList.add("active");
+  });
+})();
+</script>

@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Symptom Checker | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:900px;margin:0 auto;padding:40px 20px;}
+.page-head{text-align:center;margin-bottom:32px;}
+.page-head h1{font-size:27px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:6px;}
+.search-card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.05);margin-bottom:24px;}
+.symptoms-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.tag{padding:6px 14px;background:#f0f9ff;border:1.5px solid #bae6fd;color:#1e88e5;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;user-select:none;}
+.tag.selected,.tag:hover{background:#1e88e5;color:#fff;border-color:#1e88e5;}
+.sinput{width:100%;padding:13px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;font-family:inherit;transition:.2s;margin-bottom:12px;}
+.sinput:focus{border-color:#1e88e5;}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,.3);}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.result-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;transition:.2s;}
+.result-card:hover{border-color:#1e88e5;box-shadow:0 6px 20px rgba(30,136,229,.1);}
+.for-symptom{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#00bfa5;margin-bottom:8px;}
+.med-name{font-size:18px;font-weight:800;color:#1a202c;margin-bottom:6px;}
+.med-dose{font-size:13px;color:#64748b;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.med-note{font-size:13px;color:#475569;background:#f8fafc;padding:8px 12px;border-radius:8px;}
+.disclaimer{background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:13px;color:#92400e;margin-top:20px;}
+.disclaimer i{margin-right:6px;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-stethoscope" style="color:#1e88e5"></i> Symptom Checker</h1>
+    <p>Select or type your symptoms to get medicine suggestions</p>
+  </div>
+
+  <div class="search-card">
+    <p style="font-size:13px;font-weight:700;color:#64748b;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Quick select symptoms:</p>
+    <div class="symptoms-tags" id="tagContainer">
+      {% for s in ['Fever','Headache','Cold','Cough','Acidity','Allergy','Pain','Diarrhea','Vomiting','Insomnia','Anxiety','Hypertension','Diabetes','Infection'] %}
+      <span class="tag" onclick="toggleTag(this,'{{ s.lower() }}')">{{ s }}</span>
+      {% endfor %}
+    </div>
+    <form method="POST">
+      <input class="sinput" type="text" name="symptoms" id="symptomsInput"
+             placeholder="Or describe symptoms: e.g. fever headache cough..."
+             value="{{ entered }}">
+      <button class="btn" type="submit"><i class="fa fa-search"></i> Find Medicines</button>
+    </form>
+  </div>
+
+  {% if suggestions %}
+  <h3 style="font-size:17px;font-weight:700;margin-bottom:16px;">
+    <i class="fa fa-pills" style="color:#1e88e5;margin-right:7px;"></i>
+    Suggested Medicines for: <em style="color:#1e88e5;">{{ entered.title() }}</em>
+  </h3>
+  <div class="results-grid">
+    {% for s in suggestions %}
+    <div class="result-card">
+      <div class="for-symptom"><i class="fa fa-tag"></i> {{ s.symptom }}</div>
+      <div class="med-name">{{ s.name }}</div>
+      <div class="med-dose"><i class="fa fa-syringe" style="color:#94a3b8;"></i> {{ s.dose }}</div>
+      <div class="med-note">{{ s.note }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="disclaimer">
+    <i class="fa fa-triangle-exclamation"></i>
+    <strong>Important:</strong> These are general suggestions only. Always consult a qualified doctor or pharmacist before taking any medicine. Self-medication can be dangerous.
+  </div>
+  {% elif request.method == 'POST' %}
+  <div style="text-align:center;padding:40px;color:#94a3b8;">
+    <i class="fa fa-face-frown" style="font-size:40px;display:block;margin-bottom:12px;color:#e2e8f0;"></i>
+    <p>No suggestions found for "<strong>{{ entered }}</strong>". Try keywords like: fever, headache, cold, cough, pain, allergy, acidity.</p>
+  </div>
+  {% endif %}
+</div>
+{% include "footer.html" %}
+<script>
+function toggleTag(el, val) {
+  el.classList.toggle("selected");
+  const inp = document.getElementById("symptomsInput");
+  const words = inp.value.trim().split(/\s+/).filter(Boolean);
+  if (el.classList.contains("selected")) {
+    if (!words.includes(val)) words.push(val);
+  } else {
+    const idx = words.indexOf(val);
+    if (idx > -1) words.splice(idx, 1);
+  }
+  inp.value = words.join(" ");
+}
+// Highlight pre-selected
+(function(){
+  const entered = "{{ entered }}".toLowerCase();
+  document.querySelectorAll(".tag").forEach(t=>{
+    if(entered.includes(t.textContent.trim().toLowerCase()))
+      t.classList.add("selected");
+  });
+})();
+</script>
+</body></html>

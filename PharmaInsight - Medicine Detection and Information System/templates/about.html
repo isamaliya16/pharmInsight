@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About Us | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{background:#f7fafc;color:#1a202c;}
+.hero{text-align:center;padding:80px 20px 60px;background:linear-gradient(135deg,#eff6ff,#f0fffe);}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;}
+.hero span{color:#1e88e5;}
+.hero p{margin-top:12px;font-size:16px;color:#64748b;max-width:560px;margin:12px auto 0;}
+.section{padding:70px 8%;max-width:1200px;margin:0 auto;}
+.section h2{font-size:30px;font-weight:700;margin-bottom:8px;text-align:center;}
+.section .sub{color:#64748b;text-align:center;margin-bottom:40px;font-size:15px;}
+.mv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.mv-card{background:#fff;padding:28px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);border:1.5px solid #e2e8f0;transition:.2s;}
+.mv-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.1);border-color:#1e88e5;}
+.mv-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:#fff;font-size:20px;}
+.blue{background:linear-gradient(135deg,#1e88e5,#42a5f5);}
+.green{background:linear-gradient(135deg,#00bfa5,#26d9c0);}
+.amber{background:linear-gradient(135deg,#f59e0b,#fbbf24);}
+.purple{background:linear-gradient(135deg,#8b5cf6,#a78bfa);}
+.mv-card h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+.mv-card p{font-size:14px;color:#64748b;line-height:1.7;}
+.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;}
+.val-card{background:#fff;padding:26px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.05);text-align:center;border:1.5px solid #e2e8f0;}
+.val-card i{font-size:26px;color:#1e88e5;margin-bottom:12px;display:block;}
+.val-card h4{font-size:16px;font-weight:700;margin-bottom:6px;}
+.val-card p{font-size:13px;color:#64748b;}
+.stats-bar{background:#0f172a;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;text-align:center;padding:50px 5%;}
+.stat-item{padding:20px;}
+.stat-item h3{font-size:32px;font-weight:800;color:#1e88e5;}
+.stat-item p{font-size:14px;color:#94a3b8;margin-top:4px;}
+</style>
+</head>
+<body>
+{% include "header.html" %}
+
+<!-- HERO -->
+<section class="hero">
+  {# Bug fix: was titled "About MediScan" but contact section was also embedded inside — separated to own page #}
+  <h1>About <span>MediScan</span></h1>
+  <p>Empowering millions with accurate medicine information through AI technology</p>
+</section>
+
+<!-- MISSION / VISION -->
+<div class="section">
+  <h2>Our Mission &amp; Vision</h2>
+  <p class="sub">Why we built MediScan and what drives us forward</p>
+  <div class="mv-grid">
+    <div class="mv-card">
+      <div class="mv-icon blue"><i class="fa fa-bullseye"></i></div>
+      <h3>Our Mission</h3>
+      <p>To make medicine information accessible to everyone, regardless of technical knowledge or language. We believe informed patients make better healthcare decisions.</p>
+    </div>
+    <div class="mv-card">
+      <div class="mv-icon green"><i class="fa fa-eye"></i></div>
+      <h3>Our Vision</h3>
+      <p>To become the most trusted platform for medicine identification and information worldwide, bridging the gap between patients and their medication knowledge.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CORE VALUES -->
+<div style="background:#fff;padding:70px 8%;">
+  <div style="max-width:1100px;margin:auto;text-align:center;">
+    <h2>Our Core Values</h2>
+    <p class="sub" style="margin-bottom:36px;">The principles that guide everything we do</p>
+    <div class="values-grid">
+      <div class="val-card"><i class="fa fa-shield-halved"></i><h4>Accuracy</h4><p>All data is verified and sourced from trusted medical references including US FDA.</p></div>
+      <div class="val-card"><i class="fa fa-heart"></i><h4>Care</h4><p>User health and safety are our top priority in every feature we build.</p></div>
+      <div class="val-card"><i class="fa fa-lightbulb"></i><h4>Innovation</h4><p>We leverage AI to simplify medicine identification and information retrieval.</p></div>
+      <div class="val-card"><i class="fa fa-globe"></i><h4>Accessibility</h4><p>Supporting multiple languages to serve India's diverse communities.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><h3>50,000+</h3><p>Medicines in Database</p></div>
+  <div class="stat-item"><h3>1M+</h3><p>Monthly Users</p></div>
+  <div class="stat-item"><h3>99.9%</h3><p>Accuracy Rate</p></div>
+  <div class="stat-item"><h3>3</h3><p>Languages Supported</p></div>
+</div>
+
+{% include "footer.html" %}
+</body>
+</html>

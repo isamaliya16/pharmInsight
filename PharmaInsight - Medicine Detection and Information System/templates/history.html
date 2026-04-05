@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search History | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
+body{background:#f7fafc;color:#1a202c;}
+.page{max-width:1100px;margin:0 auto;padding:40px 20px;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:28px;}
+.page-header h1{font-size:28px;font-weight:700;}
+.page-header p{color:#64748b;margin-top:4px;font-size:14px;}
+.clear-btn{background:#ef4444;color:#fff;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px;transition:.2s;}
+.clear-btn:hover{background:#dc2626;transform:translateY(-1px);}
+.search-bar{background:#fff;padding:14px 18px;border-radius:12px;display:flex;gap:10px;align-items:center;box-shadow:0 4px 15px rgba(0,0,0,.05);margin-bottom:24px;border:1.5px solid #e2e8f0;}
+.search-bar i{color:#94a3b8;font-size:15px;}
+.search-bar input{flex:1;border:none;outline:none;font-size:14px;background:transparent;color:#1a202c;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:#fff;padding:16px 18px;border-radius:12px;border:1.5px solid #e2e8f0;text-align:center;}
+.stat-card .num{font-size:26px;font-weight:700;color:#1e88e5;}
+.stat-card .lbl{font-size:12px;color:#64748b;margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+/* TABLE */
+.table-wrap{background:#fff;border-radius:14px;border:1.5px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.05);}
+table{width:100%;border-collapse:collapse;}
+thead th{background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;padding:13px 16px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600;}
+tbody tr{border-bottom:1px solid #f1f5f9;transition:.15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#f8fafc;}
+td{padding:13px 16px;font-size:14px;color:#334155;vertical-align:middle;}
+.med-name{font-weight:600;color:#1e88e5;}
+.badge{display:inline-flex;align-items:center;gap:5px;background:#eff6ff;color:#1e88e5;padding:4px 10px;font-size:12px;border-radius:20px;font-weight:500;}
+.badge.voice{background:#f0fdf4;color:#16a34a;}
+.time{color:#94a3b8;font-size:12px;}
+.action-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.action-btn:hover{background:#1e88e5;color:#fff;border-color:#1e88e5;}
+.empty{text-align:center;padding:60px 20px;color:#94a3b8;}
+.empty i{font-size:48px;margin-bottom:14px;display:block;color:#e2e8f0;}
+.empty h3{font-size:18px;color:#64748b;margin-bottom:6px;}
+/* MOBILE */
+@media(max-width:600px){
+  thead{display:none;}
+  tbody tr{display:block;margin-bottom:12px;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px;}
+  td{display:block;padding:5px 0;border:none;}
+  td::before{content:attr(data-label);font-weight:700;font-size:11px;color:#94a3b8;display:block;text-transform:uppercase;margin-bottom:2px;}
+}
+</style>
+</head>
+<body>
+{% include "header.html" %}
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1><i class="fa fa-clock-rotate-left" style="color:#1e88e5;margin-right:8px;"></i>Search History</h1>
+      <p>All medicine searches for your account</p>
+    </div>
+    <button class="clear-btn" onclick="confirmClear()"><i class="fa fa-trash"></i> Clear History</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="num">{{ history|length }}</div>
+      <div class="lbl">Total Searches</div>
+    </div>
+    <div class="stat-card">
+      {# count unique medicines #}
+      <div class="num">{{ history|map(attribute='medicine_name')|list|unique|list|length }}</div>
+      <div class="lbl">Unique Medicines</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ history|selectattr('search_type','equalto','Voice Search')|list|length }}</div>
+      <div class="lbl">Voice Searches</div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="search-bar">
+    <i class="fa fa-search"></i>
+    <input type="text" id="filterInput" placeholder="Filter by medicine name…" oninput="filterRows()">
+  </div>
+
+  <div class="table-wrap">
+    {% if history %}
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Medicine Name</th>
+          <th>Search Type</th>
+          <th>Date &amp; Time</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+        {% for item in history %}
+        <tr data-name="{{ item['medicine_name']|lower }}">
+          <td data-label="#">{{ loop.index }}</td>
+          <td data-label="Medicine"><span class="med-name">{{ item['medicine_name'] }}</span></td>
+          <td data-label="Type">
+            <span class="badge {% if item['search_type']=='Voice Search' %}voice{% endif %}">
+              <i class="fa {% if item['search_type']=='Voice Search' %}fa-microphone{% else %}fa-keyboard{% endif %}"></i>
+              {{ item['search_type'] }}
+            </span>
+          </td>
+          <td data-label="Date">
+            {# Bug fix: search_time was not selected in old query — now it is #}
+            <span class="time">{{ item['search_time'] if item['search_time'] else '—' }}</span>
+          </td>
+          <td data-label="Action">
+            <a class="action-btn" href="/search" onclick="setSearch('{{ item['medicine_name'] }}')">
+              <i class="fa fa-search"></i> Search Again
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+      <i class="fa fa-clock-rotate-left"></i>
+      <h3>No search history yet</h3>
+      <p>Your medicine searches will appear here.</p>
+      <a class="action-btn" href="/search" style="margin-top:14px;display:inline-flex;"><i class="fa fa-search"></i> Start Searching</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% include "footer.html" %}
+
+<script>
+function filterRows(){
+  const q = document.getElementById("filterInput").value.toLowerCase();
+  document.querySelectorAll("#historyBody tr").forEach(row => {
+    row.style.display = row.dataset.name.includes(q) ? "" : "none";
+  });
+}
+
+function setSearch(name){
+  sessionStorage.setItem("quickSearch", name);
+}
+
+function confirmClear(){
+  if(confirm("Clear all your search history? This cannot be undone.")){
+    window.location.href = "/clear-history";
+  }
+}
+
+// Pre-fill search box from session if coming from history
+window.addEventListener("DOMContentLoaded", () => {
+  const q = sessionStorage.getItem("quickSearch");
+  if(q){
+    sessionStorage.removeItem("quickSearch");
+    const inp = document.querySelector('input[name="medicine"]');
+    if(inp){ inp.value = q; inp.closest("form") && inp.closest("form").submit(); }
+  }
+});
+</script>
+</body>
+</html>

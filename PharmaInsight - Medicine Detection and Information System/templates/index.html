@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MediScan | AI Medicine Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--p:#1e88e5;--s:#00bfa5;--dk:#0f172a;--gray:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans','Segoe UI',sans-serif;}
+body{background:#f8fafc;color:var(--dk);line-height:1.6;}
+
+/* HERO */
+.hero{padding:clamp(50px,8vw,90px) 5%;text-align:center;max-width:1300px;margin:auto;}
+.badge-pill{display:inline-block;background:rgba(30,136,229,.1);color:var(--p);padding:7px 18px;border-radius:50px;font-weight:700;margin-bottom:20px;font-size:14px;border:1.5px solid rgba(30,136,229,.2);}
+.hero h1{font-size:clamp(30px,5vw,54px);line-height:1.15;margin-bottom:16px;font-weight:800;}
+.hero h1 span{color:var(--p);}
+.hero p{font-size:clamp(15px,2vw,18px);color:var(--gray);max-width:680px;margin:0 auto 30px;}
+.hero-btns{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.btn-primary-hero{padding:14px 28px;font-size:15px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--p),var(--s));color:#fff;font-weight:700;transition:.3s;display:inline-flex;align-items:center;gap:8px;text-decoration:none;box-shadow:0 4px 16px rgba(30,136,229,.3);}
+.btn-primary-hero:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(30,136,229,.4);}
+.btn-outline-hero{padding:14px 28px;font-size:15px;border-radius:10px;border:2px solid var(--p);background:transparent;color:var(--p);cursor:pointer;font-weight:700;transition:.3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-outline-hero:hover{background:var(--p);color:#fff;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:52px;}
+.stat-card{background:#fff;padding:26px 20px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);transition:.3s;border:1.5px solid #e2e8f0;text-align:center;}
+.stat-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(0,0,0,.1);border-color:var(--p);}
+.stat-card i{font-size:30px;color:var(--s);margin-bottom:10px;display:block;}
+.stat-card h3{font-size:clamp(24px,3vw,30px);color:var(--p);font-weight:800;}
+.stat-card p{color:var(--gray);font-weight:600;font-size:13px;margin-top:4px;}
+
+/* SECTION */
+.section{padding:clamp(56px,7vw,96px) 5%;text-align:center;}
+.section h2{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:10px;}
+.section .sub{font-size:clamp(14px,2vw,17px);color:var(--gray);margin-bottom:44px;max-width:600px;margin-left:auto;margin-right:auto;}
+
+/* FEATURES GRID — 10 features */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;max-width:1200px;margin:0 auto;}
+.feat-card{background:#fff;padding:26px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06);transition:.3s;border:1.5px solid #e2e8f0;text-align:left;text-decoration:none;display:block;color:inherit;}
+.feat-card:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,0,0,.1);border-color:var(--p);}
+.feat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin-bottom:14px;}
+.feat-card h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+.feat-card p{font-size:13.5px;color:var(--gray);line-height:1.6;}
+.feat-tag{display:inline-block;background:rgba(30,136,229,.08);color:var(--p);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:10px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* METHOD CARDS */
+.method-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;max-width:1100px;margin:0 auto;}
+.method-card{background:#fff;padding:32px 22px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06);transition:.3s;border:1.5px solid #e2e8f0;cursor:pointer;text-align:center;}
+.method-card:hover{transform:translateY(-7px);box-shadow:0 14px 36px rgba(0,0,0,.1);border-color:var(--p);}
+.mc-icon{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;}
+.mc-icon.blue{background:linear-gradient(135deg,var(--p),#42a5f5);}
+.mc-icon.green{background:linear-gradient(135deg,var(--s),#26d9c0);}
+.mc-icon.gray{background:linear-gradient(135deg,#64748b,#94a3b8);}
+.mc-icon.dark{background:linear-gradient(135deg,var(--dk),#1e293b);}
+
+/* HOW IT WORKS */
+.how-wrap{background:linear-gradient(135deg,#eef2ff,#f0fffe);}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;max-width:1000px;margin:0 auto;}
+.step{background:#fff;padding:34px 24px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06);transition:.3s;border:1.5px solid #e2e8f0;text-align:center;}
+.step:hover{transform:translateY(-7px);box-shadow:0 14px 36px rgba(0,0,0,.1);}
+.circle{width:58px;height:58px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--s));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 8px 20px rgba(30,136,229,.3);}
+
+/* CTA */
+.cta{padding:clamp(60px,8vw,90px) 5%;background:linear-gradient(135deg,var(--p),var(--s));text-align:center;color:#fff;}
+.cta-btn{padding:15px 32px;font-size:16px;font-weight:700;border-radius:50px;border:none;cursor:pointer;background:#fff;color:var(--p);display:inline-flex;align-items:center;gap:10px;transition:.3s;text-decoration:none;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.2);}
+.success-banner{background:#f0fdf4;border-bottom:2px solid #86efac;color:#15803d;padding:12px;text-align:center;font-size:14px;font-weight:500;}
+</style>
+</head>
+<body>
+
+{% include "header.html" %}
+
+{% if request.args.get('msg') == 'sent' %}
+<div class="success-banner"><i class="fa fa-circle-check"></i> Your message was sent! We'll be in touch soon.</div>
+{% endif %}
+
+<!-- HERO -->
+<section class="hero">
+  <span class="badge-pill">🇮🇳 India's Most Trusted Medicine Platform</span>
+  <h1>Identify Medicines <span>Instantly</span><br>With AI-Powered Search</h1>
+  <p>Search by text or voice. Get complete FDA-verified medicine information, check drug interactions, set reminders, compare generics, and more — all in one place.</p>
+  <div class="hero-btns">
+    <a href="/search"   class="btn-primary-hero"><i class="fa fa-search"></i> Search Medicines</a>
+    <a href="/dashboard" class="btn-outline-hero"><i class="fa fa-chart-pie"></i> My Dashboard</a>
+  </div>
+  <div class="stats">
+    <div class="stat-card"><i class="fa fa-pills"></i><h3>50K+</h3><p>Medicines</p></div>
+    <div class="stat-card"><i class="fa fa-users"></i><h3>1M+</h3><p>Users</p></div>
+    <div class="stat-card"><i class="fa fa-headset"></i><h3>24/7</h3><p>Support</p></div>
+    <div class="stat-card"><i class="fa fa-check-circle"></i><h3>99.9%</h3><p>Accuracy</p></div>
+    <div class="stat-card"><i class="fa fa-bolt"></i><h3>10</h3><p>Smart Features</p></div>
+  </div>
+</section>
+
+<!-- 10 FEATURES SHOWCASE -->
+<section class="section" style="background:#fff;">
+  <h2>10 Powerful Features</h2>
+  <p class="sub">Everything you need for informed medication management — all in one platform</p>
+  <div class="features-grid">
+    {% for feat in [
+      ('fa-magnifying-glass','#1e88e5','Medicine Search','Live FDA-verified data for 50,000+ medicines with dosage, side effects & more','/search','Live FDA Data'),
+      ('fa-triangle-exclamation','#ef4444','Drug Interaction Checker','Instantly check for dangerous interactions between two medicines','/interaction','Safety'),
+      ('fa-bell','#f59e0b','Medicine Reminders','Never miss a dose with smart daily reminders and scheduling','/reminders','Smart Alerts'),
+      ('fa-file-medical','#8b5cf6','Prescription OCR','Extract medicine names from typed prescriptions automatically','/prescription','AI Powered'),
+      ('fa-cart-shopping','#00bfa5','Order & Home Delivery','Browse catalogue, add to cart, and order with multiple payment options','/order','E-Commerce'),
+      ('fa-scale-balanced','#0d9488','Generic Comparator','Find identical generic medicines at a fraction of the brand price','/comparator','Save Money'),
+      ('fa-stethoscope','#ec4899','Symptom Checker','Describe symptoms and get relevant medicine suggestions instantly','/symptoms','AI Guided'),
+      ('fa-chart-pie','#7c3aed','Health Dashboard','Your personal health overview — searches, reminders, orders & trends','/dashboard','Personal'),
+      ('fa-globe','#1e88e5','Multi-Language','Full support for English, Hindi and Gujarati — switch instantly','/set-language/en','EN | HI | GU'),
+      ('fa-star','#f59e0b','Reviews & Ratings','Rate medicines and read real user experiences and recommendations','/reviews','Community'),
+    ] %}
+    <a href="{{ feat[4] }}" class="feat-card">
+      <div class="feat-icon" style="background:{{ feat[1] }};box-shadow:0 6px 16px {{ feat[1] }}44;">
+        <i class="fa {{ feat[0] }}"></i>
+      </div>
+      <h3>{{ feat[2] }}</h3>
+      <p>{{ feat[3] }}</p>
+      <span class="feat-tag">{{ feat[5] }}</span>
+    </a>
+    {% endfor %}
+    <!-- AI Chatbot card (11th, bonus) -->
+    <div class="feat-card" style="background:linear-gradient(135deg,#f0f9ff,#f0fffe);border-color:#bae6fd;">
+      <div class="feat-icon" style="background:linear-gradient(135deg,#1e88e5,#00bfa5);box-shadow:0 6px 16px rgba(30,136,229,.3);">
+        <i class="fa fa-robot"></i>
+      </div>
+      <h3>AI MediBot Chatbot</h3>
+      <p>Chat with our AI assistant about any medicine — available on every page via the floating button</p>
+      <span class="feat-tag">Always On</span>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH METHODS -->
+<section class="section how-wrap">
+  <h2>Multiple Ways to Search</h2>
+  <p class="sub">Choose the method that works best for you</p>
+  <div class="method-cards">
+    <div class="method-card" onclick="window.location='/search'">
+      <div class="mc-icon blue"><i class="fa fa-search"></i></div>
+      <h3>Text Search</h3>
+      <p>Type any medicine name for instant FDA-verified results</p>
+    </div>
+    <div class="method-card" onclick="window.location='/search'">
+      <div class="mc-icon green"><i class="fa fa-microphone"></i></div>
+      <h3>Voice Input</h3>
+      <p>Speak the medicine name hands-free — browser speech API</p>
+    </div>
+    <div class="method-card" onclick="window.location='/prescription'">
+      <div class="mc-icon gray"><i class="fa fa-file-medical"></i></div>
+      <h3>Prescription OCR</h3>
+      <p>Paste prescription text to extract all medicine names at once</p>
+    </div>
+    <div class="method-card" onclick="window.location='/symptoms'">
+      <div class="mc-icon dark"><i class="fa fa-stethoscope"></i></div>
+      <h3>Symptom Checker</h3>
+      <p>Describe symptoms and find relevant medicines instantly</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:#fff;">
+  <h2>How It Works</h2>
+  <p class="sub">Get medicine information in just 3 simple steps</p>
+  <div class="steps">
+    <div class="step"><div class="circle">01</div><h4 style="font-size:17px;font-weight:700;margin-bottom:7px;">Search Medicine</h4><p style="font-size:14px;color:var(--gray);">Enter name, use voice, paste prescription, or pick symptoms</p></div>
+    <div class="step"><div class="circle">02</div><h4 style="font-size:17px;font-weight:700;margin-bottom:7px;">Get Full Details</h4><p style="font-size:14px;color:var(--gray);">FDA-verified dosage, side effects, interactions and alternatives</p></div>
+    <div class="step"><div class="circle">03</div><h4 style="font-size:17px;font-weight:700;margin-bottom:7px;">Act & Stay Safe</h4><p style="font-size:14px;color:var(--gray);">Set reminders, compare generics, order online, or consult a doctor</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <i class="fa fa-heart" style="font-size:42px;margin-bottom:12px;color:#ffdde5;display:block;"></i>
+  <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:10px;">Start Your Health Journey Today</h2>
+  <p style="font-size:clamp(15px,2vw,17px);opacity:.95;max-width:580px;margin:0 auto 28px;">Join millions of users who trust MediScan for reliable, comprehensive medicine information</p>
+  <a href="{% if session.get('user_id') %}/search{% else %}/register{% endif %}" class="cta-btn">
+    <i class="fa {% if session.get('user_id') %}fa-search{% else %}fa-user-plus{% endif %}"></i>
+    {% if session.get('user_id') %}Search Medicines Now{% else %}Get Started Free{% endif %}
+  </a>
+</section>
+
+{% include "footer.html" %}
+</body>
+</html>

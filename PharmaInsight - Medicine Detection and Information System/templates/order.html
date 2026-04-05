@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Order Medicines | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:1080px;margin:0 auto;padding:40px 20px;}
+.page-head{margin-bottom:28px;}
+.page-head h1{font-size:26px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:4px;}
+.layout{display:grid;grid-template-columns:1fr 360px;gap:22px;}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}}
+.card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.05);}
+.card h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.card h3 i{color:#1e88e5;}
+/* catalogue */
+.med-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.med-item{border:1.5px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;transition:.2s;cursor:pointer;}
+.med-item:hover{border-color:#1e88e5;box-shadow:0 4px 14px rgba(30,136,229,.12);}
+.med-item .emoji{font-size:28px;margin-bottom:6px;}
+.med-item .mname{font-weight:700;font-size:14px;}
+.med-item .mprice{color:#1e88e5;font-weight:800;font-size:15px;margin:4px 0;}
+.med-item .mcategory{font-size:11px;color:#94a3b8;margin-bottom:8px;}
+.add-btn{background:#eff6ff;color:#1e88e5;border:1.5px solid #bfdbfe;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;width:100%;}
+.add-btn:hover{background:#1e88e5;color:#fff;border-color:#1e88e5;}
+/* cart */
+.cart-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+.cart-item:last-child{border-bottom:none;}
+.ci-emoji{font-size:20px;}
+.ci-info{flex:1;}
+.ci-name{font-weight:700;font-size:14px;}
+.ci-price{font-size:13px;color:#64748b;}
+.qty-row{display:flex;align-items:center;gap:6px;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.qty-btn:hover{background:#1e88e5;color:#fff;border-color:#1e88e5;}
+.qty-num{font-weight:700;min-width:20px;text-align:center;font-size:14px;}
+.remove-btn{background:#fff0f0;color:#ef4444;border:none;border-radius:7px;padding:4px 8px;cursor:pointer;font-size:12px;}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:14px;color:#475569;}
+.summary-total{font-weight:800;font-size:17px;color:#1a202c;border-top:1.5px solid #e2e8f0;padding-top:10px;margin-top:4px;}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;outline:none;font-family:inherit;margin-bottom:10px;transition:.2s;}
+.form-input:focus{border-color:#1e88e5;}
+.pay-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:9px;cursor:pointer;margin-bottom:8px;transition:.2s;}
+.pay-opt:hover,.pay-opt.sel{border-color:#1e88e5;background:#eff6ff;}
+.pay-opt input{display:none;}
+.place-btn{width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;margin-top:14px;}
+.place-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(30,136,229,.3);}
+/* orders history */
+.order-row{display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:10px;margin-bottom:8px;border:1.5px solid #e2e8f0;}
+.order-id{font-family:monospace;font-weight:700;color:#1e88e5;font-size:13px;}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.status-badge.Placed{background:#eff6ff;color:#1e88e5;}
+.status-badge.Dispatched{background:#fffbeb;color:#d97706;}
+.status-badge.Delivered{background:#f0fdf4;color:#16a34a;}
+/* success overlay */
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.6);backdrop-filter:blur(4px);z-index:2000;align-items:center;justify-content:center;}
+.success-overlay.show{display:flex;}
+.success-box{background:#fff;border-radius:20px;padding:40px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.2);}
+.success-icon{width:72px;height:72px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#16a34a;margin:0 auto 16px;}
+.close-success{margin-top:18px;padding:11px 24px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-cart-shopping" style="color:#1e88e5;margin-right:8px;"></i>Order Medicines</h1>
+    <p>Browse our catalogue, add to cart, and place your order</p>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: Catalogue + Cart -->
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <h3><i class="fa fa-store"></i>Medicine Catalogue</h3>
+        <div class="med-grid">
+          {% for m in [
+            ('💊','Paracetamol 500mg','Analgesic',18),('💊','Ibuprofen 400mg','NSAID',28),
+            ('💊','Amoxicillin 250mg','Antibiotic',85),('💊','Cetirizine 10mg','Antihistamine',22),
+            ('💊','Omeprazole 20mg','PPI',45),('💊','Metformin 500mg','Antidiabetic',32),
+            ('💊','Atorvastatin 10mg','Statin',75),('💊','Azithromycin 500mg','Antibiotic',95),
+            ('💊','Amlodipine 5mg','CCB',38),('💊','Vitamin D3 1000IU','Supplement',55),
+          ] %}
+          <div class="med-item" onclick="addToCart('{{ m[1] }}',{{ m[3] }},'{{ m[0] }}')">
+            <div class="emoji">{{ m[0] }}</div>
+            <div class="mname">{{ m[1] }}</div>
+            <div class="mcategory">{{ m[2] }}</div>
+            <div class="mprice">₹{{ m[3] }}</div>
+            <button class="add-btn"><i class="fa fa-plus"></i> Add to Cart</button>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Cart + Checkout -->
+    <div>
+      <div class="card" style="margin-bottom:18px;">
+        <h3><i class="fa fa-shopping-bag"></i>Cart (<span id="cartCount">0</span>)</h3>
+        <div id="cartItems"><p style="color:#94a3b8;font-size:13px;text-align:center;padding:20px;">Your cart is empty</p></div>
+        <div id="cartSummary" style="display:none;margin-top:12px;">
+          <div class="summary-row"><span>Subtotal</span><span id="subtotalDisp">₹0</span></div>
+          <div class="summary-row"><span>Delivery</span><span style="color:#16a34a;">FREE</span></div>
+          <div class="summary-row summary-total"><span>Total</span><span id="totalDisp">₹0</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="checkoutCard" style="display:none;">
+        <h3><i class="fa fa-truck"></i>Delivery Details</h3>
+        <textarea class="form-input" id="deliveryAddress" placeholder="Full delivery address..." rows="3" style="height:80px;resize:none;"></textarea>
+        <h3 style="margin-top:8px;"><i class="fa fa-credit-card"></i>Payment Method</h3>
+        {% for pm,icon in [('UPI / PhonePe','📱'),('Credit/Debit Card','💳'),('Net Banking','🏦'),('Cash on Delivery','💵')] %}
+        <div class="pay-opt" onclick="selPay(this,'{{ pm }}')">
+          <span style="font-size:18px;">{{ icon }}</span>
+          <span style="font-size:14px;font-weight:500;">{{ pm }}</span>
+        </div>
+        {% endfor %}
+        <button class="place-btn" onclick="placeOrder()"><i class="fa fa-lock"></i> Place Order Securely</button>
+      </div>
+
+      <!-- Past Orders -->
+      {% if my_orders %}
+      <div class="card" style="margin-top:18px;">
+        <h3><i class="fa fa-box"></i>My Orders</h3>
+        {% for o in my_orders %}
+        <div class="order-row">
+          <div class="order-id">#{{ o['id'] }}</div>
+          <div style="flex:1;font-size:13px;color:#475569;">{{ o['total']|round(0)|int|string }}₹ · {{ o['payment'] }}</div>
+          <span class="status-badge {{ o['status'] }}">{{ o['status'] }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon"><i class="fa fa-check"></i></div>
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">Order Placed!</h2>
+    <p style="color:#64748b;font-size:14px;">Your order has been confirmed. Expected delivery: 2–3 days.</p>
+    <div id="orderId" style="margin:12px 0;font-family:monospace;font-size:13px;font-weight:700;background:#f0f9ff;padding:8px;border-radius:8px;color:#1e88e5;"></div>
+    <button class="close-success" onclick="closeSuccess()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Hidden form to POST order -->
+<form id="orderForm" method="POST" style="display:none;">
+  <input type="hidden" name="items_json" id="itemsJson">
+  <input type="hidden" name="address"    id="addressHidden">
+  <input type="hidden" name="total"      id="totalHidden">
+  <input type="hidden" name="payment"    id="paymentHidden">
+</form>
+
+{% include "footer.html" %}
+<script>
+let cart = [];
+let selPayment = "UPI / PhonePe";
+
+function addToCart(name, price, emoji) {
+  const ex = cart.find(i => i.name === name);
+  if (ex) ex.qty++;
+  else cart.push({ name, price, emoji, qty: 1 });
+  renderCart();
+}
+
+function changeQty(i, d) {
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById("cartItems");
+  const sumEl = document.getElementById("cartSummary");
+  const cc = document.getElementById("cartCount");
+  const chk = document.getElementById("checkoutCard");
+  cc.textContent = cart.reduce((s,i)=>s+i.qty,0);
+  if (!cart.length) {
+    el.innerHTML = '<p style="color:#94a3b8;font-size:13px;text-align:center;padding:20px;">Your cart is empty</p>';
+    sumEl.style.display = "none"; chk.style.display = "none"; return;
+  }
+  el.innerHTML = cart.map((item,i) => `
+    <div class="cart-item">
+      <div class="ci-emoji">${item.emoji}</div>
+      <div class="ci-info"><div class="ci-name">${item.name}</div><div class="ci-price">₹${item.price} × ${item.qty}</div></div>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>
+      <button class="remove-btn" onclick="cart.splice(${i},1);renderCart()"><i class="fa fa-trash"></i></button>
+    </div>`).join("");
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById("subtotalDisp").textContent = "₹"+total;
+  document.getElementById("totalDisp").textContent = "₹"+total;
+  sumEl.style.display = "block"; chk.style.display = "block";
+}
+
+function selPay(el, pm) {
+  document.querySelectorAll(".pay-opt").forEach(e=>e.classList.remove("sel"));
+  el.classList.add("sel"); selPayment = pm;
+}
+
+function placeOrder() {
+  const addr = document.getElementById("deliveryAddress").value.trim();
+  if (!addr) { alert("Please enter delivery address."); return; }
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById("itemsJson").value   = JSON.stringify(cart);
+  document.getElementById("addressHidden").value = addr;
+  document.getElementById("totalHidden").value   = total;
+  document.getElementById("paymentHidden").value = selPayment;
+  document.getElementById("orderForm").submit();
+}
+
+function closeSuccess() {
+  cart = []; renderCart();
+  document.getElementById("successOverlay").classList.remove("show");
+}
+
+{% if message == 'success' %}
+document.getElementById("successOverlay").classList.add("show");
+document.getElementById("orderId").textContent = "Order #ORD{{ range(10000,99999)|random }}";
+{% endif %}
+
+// Pre-select first payment option
+document.querySelector(".pay-opt").classList.add("sel");
+</script>
+</body></html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Prescription OCR | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:900px;margin:0 auto;padding:40px 20px;}
+.page-head{text-align:center;margin-bottom:32px;}
+.page-head h1{font-size:27px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:6px;}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+@media(max-width:700px){.layout{grid-template-columns:1fr;}}
+.card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:26px;box-shadow:0 4px 16px rgba(0,0,0,.05);}
+.card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.card h3 i{color:#1e88e5;}
+.upload-area{border:2px dashed #c7d7f0;border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:14px;}
+.upload-area:hover{border-color:#1e88e5;background:#f0f7ff;}
+.upload-area i{font-size:36px;color:#94a3b8;margin-bottom:10px;display:block;}
+.upload-area p{font-size:14px;color:#64748b;}
+.upload-area small{font-size:12px;color:#94a3b8;}
+textarea{width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;resize:vertical;height:160px;outline:none;font-family:inherit;transition:.2s;}
+textarea:focus{border-color:#1e88e5;}
+.btn{margin-top:12px;width:100%;padding:12px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(30,136,229,.3);}
+.found-list{margin-top:4px;}
+.med-found{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;margin-bottom:8px;}
+.med-found span{font-weight:700;color:#1e88e5;}
+.search-now{padding:5px 12px;background:#1e88e5;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;}
+.search-now:hover{background:#1565c0;}
+.info-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:14px 16px;font-size:13px;color:#92400e;margin-top:16px;}
+.sample-btn{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#475569;transition:.2s;margin-right:6px;margin-bottom:6px;}
+.sample-btn:hover{border-color:#1e88e5;color:#1e88e5;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-file-medical" style="color:#1e88e5"></i> Prescription OCR</h1>
+    <p>Type or paste your prescription text and we'll extract the medicine names automatically</p>
+  </div>
+
+  <div class="layout">
+    <!-- INPUT -->
+    <div class="card">
+      <h3><i class="fa fa-keyboard"></i>Enter Prescription</h3>
+      <div class="upload-area" onclick="document.getElementById('imgUpload').click()">
+        <i class="fa fa-camera"></i>
+        <p><strong>Upload Prescription Image</strong></p>
+        <small>JPG, PNG supported (text extraction simulated)</small>
+      </div>
+      <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="handleImage(this)">
+
+      <form method="POST">
+        <p style="font-size:13px;color:#64748b;margin-bottom:8px;">Or type prescription text:</p>
+        <div style="margin-bottom:8px;">
+          <button type="button" class="sample-btn" onclick="loadSample()">Load Sample Prescription</button>
+        </div>
+        <textarea name="prescription_text" id="presText"
+                  placeholder="e.g.&#10;Tab Paracetamol 500mg BD x 5 days&#10;Cap Amoxicillin 250mg TDS x 7 days&#10;Syp Cetirizine 5ml OD x 3 days">{{ ocr_text }}</textarea>
+        <button class="btn" type="submit"><i class="fa fa-magnifying-glass"></i> Extract Medicines</button>
+      </form>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="card">
+      <h3><i class="fa fa-pills"></i>Extracted Medicines
+        {% if medicines_found %}<span style="background:#dcfce7;color:#16a34a;padding:2px 9px;border-radius:20px;font-size:12px;margin-left:8px;">{{ medicines_found|length }} found</span>{% endif %}
+      </h3>
+      {% if medicines_found %}
+        <div class="found-list">
+          {% for med in medicines_found %}
+          <div class="med-found">
+            <span><i class="fa fa-pills" style="margin-right:7px;color:#64748b;"></i>{{ med }}</span>
+            <a href="/search" onclick="sessionStorage.setItem('presSearch','{{ med }}')" class="search-now">
+              <i class="fa fa-search"></i> Search
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="info-box">
+          <i class="fa fa-triangle-exclamation"></i>
+          Always verify extracted medicines with your original prescription. Consult your doctor before making any changes.
+        </div>
+      {% else %}
+        <div style="text-align:center;padding:40px 20px;color:#94a3b8;">
+          <i class="fa fa-file-circle-question" style="font-size:42px;display:block;margin-bottom:12px;color:#e2e8f0;"></i>
+          <p>Enter prescription text on the left and click Extract Medicines</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% include "footer.html" %}
+<script>
+function loadSample(){
+  document.getElementById("presText").value =
+    "Tab Paracetamol 500mg BD x 5 days\nCap Amoxicillin 250mg TDS x 7 days\nSyp Cetirizine 5ml OD x 3 days\nTab Omeprazole 20mg OD before meals\nTab Metformin 500mg BD with food";
+}
+function handleImage(inp){
+  if(inp.files&&inp.files[0]){
+    document.getElementById("presText").value =
+      "Tab Paracetamol 500mg BD\nCap Amoxicillin 250mg TDS\nSyp Cetirizine 5ml OD\n(Simulated OCR — actual OCR requires server-side processing)";
+  }
+}
+// Auto-fill search from prescription page
+window.addEventListener("DOMContentLoaded",()=>{
+  const q=sessionStorage.getItem("presSearch");
+  if(q){sessionStorage.removeItem("presSearch");
+    const inp=document.querySelector('input[name="medicine"]');
+    if(inp){inp.value=q;inp.closest("form").submit();}
+  }
+});
+</script>
+</body></html>

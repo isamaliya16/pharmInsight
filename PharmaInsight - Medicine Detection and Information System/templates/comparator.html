@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Generic Comparator | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:860px;margin:0 auto;padding:40px 20px;}
+.page-head{text-align:center;margin-bottom:32px;}
+.page-head h1{font-size:27px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:6px;}
+.search-card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.05);margin-bottom:22px;}
+.sinput{width:100%;padding:13px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;font-family:inherit;transition:.2s;margin-bottom:12px;}
+.sinput:focus{border-color:#1e88e5;}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,.3);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.chip{padding:5px 14px;background:#f0f9ff;border:1.5px solid #bae6fd;color:#1e88e5;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.2s;}
+.chip:hover{background:#1e88e5;color:#fff;}
+/* comparison */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+@media(max-width:600px){.compare-grid{grid-template-columns:1fr;}}
+.brand-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #7dd3fc;border-radius:16px;padding:24px;text-align:center;}
+.generic-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:24px;text-align:center;}
+.comp-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.brand-card .comp-label{color:#0369a1;}
+.generic-card .comp-label{color:#15803d;}
+.comp-name{font-size:22px;font-weight:800;margin-bottom:6px;}
+.comp-price{font-size:32px;font-weight:800;margin:8px 0;}
+.brand-card .comp-price{color:#0369a1;}
+.generic-card .comp-price{color:#15803d;}
+.comp-sub{font-size:13px;color:#64748b;}
+.savings-card{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fde68a;border-radius:16px;padding:22px;text-align:center;margin-bottom:18px;}
+.savings-num{font-size:36px;font-weight:800;color:#d97706;}
+.savings-lbl{font-size:14px;color:#92400e;margin-top:4px;}
+.info-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1.5px solid #e2e8f0;}
+.info-table th{background:#f8fafc;padding:11px 16px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:#64748b;text-align:left;border-bottom:1.5px solid #e2e8f0;}
+.info-table td{padding:11px 16px;font-size:14px;border-bottom:1px solid #f1f5f9;}
+.info-table tr:last-child td{border-bottom:none;}
+.check{color:#16a34a;font-weight:700;}
+.err-box{background:#fff5f5;border:1.5px solid #fca5a5;border-radius:12px;padding:16px;color:#dc2626;font-size:14px;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-scale-balanced" style="color:#1e88e5"></i> Generic vs Brand Comparator</h1>
+    <p>Find cheaper generic alternatives to expensive branded medicines</p>
+  </div>
+
+  <div class="search-card">
+    <form method="POST">
+      <input class="sinput" type="text" name="brand_name" placeholder="Enter brand name (e.g. Crocin, Brufen, Omez...)" required value="{{ request.form.get('brand_name','') }}">
+      <button class="btn" type="submit"><i class="fa fa-magnifying-glass"></i> Compare Now</button>
+    </form>
+    <div class="chips">
+      {% for name in ['Crocin','Brufen','Omez','Augmentin','Atorlip','Combiflam','Norvasc','Glucophage'] %}
+      <span class="chip" onclick="document.querySelector('input[name=brand_name]').value='{{ name }}';document.querySelector('form').submit()">{{ name }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if result %}
+    {% if result.get('error') %}
+    <div class="err-box"><i class="fa fa-circle-exclamation"></i> {{ result.error }}</div>
+    {% else %}
+    <div class="compare-grid">
+      <div class="brand-card">
+        <div class="comp-label">💊 Brand Name</div>
+        <div class="comp-name">{{ result.brand }}</div>
+        <div class="comp-sub">{{ result.generic }}</div>
+        <div class="comp-price">₹{{ result.brand_price }}</div>
+        <div class="comp-sub">per strip / pack</div>
+      </div>
+      <div class="generic-card">
+        <div class="comp-label">✅ Generic Alternative</div>
+        <div class="comp-name">{{ result.generic.split()[0] }}</div>
+        <div class="comp-sub">{{ result.generic }}</div>
+        <div class="comp-price">₹{{ result.generic_price }}</div>
+        <div class="comp-sub">per strip / pack</div>
+      </div>
+    </div>
+
+    <div class="savings-card">
+      <div class="savings-num">₹{{ result.savings }} saved ({{ result.savings_pct }}% cheaper)</div>
+      <div class="savings-lbl">By choosing the generic equivalent, you save <strong>₹{{ result.savings }}</strong> per pack</div>
+    </div>
+
+    <table class="info-table">
+      <thead><tr><th>Property</th><th>Brand</th><th>Generic</th></tr></thead>
+      <tbody>
+        <tr><td>Active Ingredient</td><td>{{ result.generic }}</td><td>{{ result.generic }}</td></tr>
+        <tr><td>Manufacturer</td><td>{{ result.manufacturer }}</td><td>Various (approved)</td></tr>
+        <tr><td>Same Effectiveness</td><td class="check">✓ Yes</td><td class="check">✓ Yes</td></tr>
+        <tr><td>FDA/CDSCO Approved</td><td class="check">✓ Yes</td><td class="check">✓ Yes</td></tr>
+        <tr><td>Bioequivalent</td><td class="check">✓ Yes</td><td class="check">✓ Yes</td></tr>
+        <tr><td>Price</td><td style="color:#ef4444;font-weight:700;">₹{{ result.brand_price }}</td><td style="color:#16a34a;font-weight:700;">₹{{ result.generic_price }}</td></tr>
+      </tbody>
+    </table>
+    <div style="background:#f0f9ff;border-left:4px solid #38bdf8;padding:12px 16px;border-radius:10px;font-size:13px;color:#0369a1;margin-top:16px;">
+      <i class="fa fa-stethoscope"></i> Generic medicines contain the same active ingredients and are equally effective. Always consult your doctor before switching.
+    </div>
+    {% endif %}
+  {% endif %}
+</div>
+{% include "footer.html" %}
+</body></html>

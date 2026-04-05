@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login | MediScan PharmaInsight</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#eef4ff,#f0fffe);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.wrap{width:100%;max-width:420px;padding:20px;}
+.card{background:#fff;padding:38px 32px;border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.12);text-align:center;}
+.icon{width:70px;height:70px;background:linear-gradient(135deg,#1e88e5,#00bfa5);margin:0 auto 20px;border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 8px 24px rgba(30,136,229,.3);}
+h2{font-size:24px;color:#0f172a;margin-bottom:5px;}
+.sub{font-size:14px;color:#64748b;margin-bottom:24px;}
+.err{background:#fff0f0;color:#c62828;border:1px solid #fca5a5;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;text-align:left;}
+.ig{position:relative;margin-bottom:14px;}
+.ig i.fi{position:absolute;top:50%;left:14px;transform:translateY(-50%);color:#94a3b8;}
+.ig i.toggle{position:absolute;top:50%;right:14px;transform:translateY(-50%);color:#94a3b8;cursor:pointer;}
+.ig input{width:100%;padding:12px 38px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:14px;outline:none;transition:.2s;}
+.ig input:focus{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.1);}
+.options{display:flex;justify-content:space-between;font-size:13px;margin-bottom:18px;color:#64748b;}
+.options a{color:#1e88e5;text-decoration:none;}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(30,136,229,.3);}
+.sw{margin-top:20px;font-size:14px;color:#64748b;}
+.sw a{color:#1e88e5;text-decoration:none;font-weight:600;}
+.back{text-align:center;margin-top:18px;}
+.back a{color:#64748b;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.back a:hover{color:#1e88e5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="icon"><i class="fa-solid fa-capsules"></i></div>
+    <h2>Welcome Back</h2>
+    <p class="sub">Sign in to your MediScan account</p>
+
+    {% if error %}
+    <div class="err"><i class="fa fa-circle-exclamation"></i> {{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="ig">
+        <i class="fi fa fa-envelope"></i>
+        <input type="email" name="email" placeholder="Email address" required
+               value="{{ request.form.get('email','') }}">
+      </div>
+      <div class="ig">
+        <i class="fi fa fa-lock"></i>
+        <input type="password" name="password" id="pw" placeholder="Password" required>
+        <i class="toggle fa fa-eye" onclick="togglePw()"></i>
+      </div>
+      <div class="options">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn">
+        <i class="fa fa-sign-in-alt"></i> Sign In
+      </button>
+    </form>
+
+    <p class="sw">Don't have an account? <a href="/register">Sign up</a></p>
+  </div>
+  <div class="back">
+    <a href="/"><i class="fa fa-arrow-left"></i> Back to Home</a>
+  </div>
+</div>
+<script>
+function togglePw(){
+  const p = document.getElementById("pw");
+  p.type = p.type === "password" ? "text" : "password";
+}
+</script>
+</body>
+</html>

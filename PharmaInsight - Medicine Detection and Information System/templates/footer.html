@@ -1,0 +1,190 @@
+{# footer.html — fixed: removed duplicate <head> tag that was breaking all pages #}
+<style>
+:root{--primary:#1e88e5;--secondary:#00bfa5;--dark:#0f172a;}
+.trust-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;background:var(--dark);padding:28px 5%;}
+.trust-bar div{font-size:14px;color:white;}
+.trust-bar i{font-size:26px;color:var(--secondary);margin-bottom:6px;display:block;}
+.footer{background:var(--dark);color:#cbd5e1;padding:60px 5% 35px;}
+.footer-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px;max-width:1300px;margin:auto;}
+.footer-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;color:#fff;margin-bottom:14px;}
+.footer-logo i{font-size:30px;color:var(--secondary);}
+.footer-text{font-size:13px;line-height:1.7;margin-bottom:16px;}
+.social-icons{display:flex;gap:10px;}
+.social-icons a{width:36px;height:36px;background:rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.3s;color:#cbd5e1;text-decoration:none;}
+.social-icons a:hover{background:var(--secondary);color:#fff;}
+.footer-col h4{font-size:16px;margin-bottom:14px;color:#fff;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:8px;}
+.footer-col ul li a{color:#cbd5e1;text-decoration:none;font-size:13px;transition:.3s;}
+.footer-col ul li a:hover{color:var(--secondary);padding-left:4px;}
+.footer-col p{font-size:13px;margin-bottom:10px;line-height:1.5;}
+.footer-col p i{color:var(--secondary);margin-right:7px;}
+.footer-bottom{text-align:center;padding-top:30px;margin-top:30px;border-top:1px solid rgba(255,255,255,.1);font-size:13px;color:#64748b;}
+</style>
+
+<footer class="trust-bar">
+  <div><i class="fa fa-shield-halved"></i><b>100% Secure</b><br>Verified Medicines</div>
+  <div><i class="fa fa-certificate"></i><b>Certified</b><br>Licensed Pharmacy</div>
+  <div><i class="fa fa-clock"></i><b>24/7 Support</b><br>Always Available</div>
+  <div><i class="fa fa-pills"></i><b>Genuine Meds</b><br>Quality Assured</div>
+</footer>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-col">
+      <div class="footer-logo"><i class="fa-solid fa-capsules"></i>MediScan</div>
+      <p class="footer-text">Your trusted companion for medicine identification, information, and online purchase. Powered by AI technology.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/search">Medicine Search</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="/history">Search History</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Medicine Identification</a></li>
+        <li><a href="#">Drug Information</a></li>
+        <li><a href="#">Alternative Medicines</a></li>
+        <li><a href="#">Prescription Upload</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <p><i class="fa fa-phone"></i> +91 1800-XXX-XXXX</p>
+      <p><i class="fa fa-envelope"></i> support@mediscan.com</p>
+      <p><i class="fa fa-location-dot"></i> Ahmedabad, Gujarat, India</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 MediScan · PharmaInsight. All rights reserved.</div>
+</footer>
+
+<!-- ═══════════════════════════════════
+     FEATURE 10 — AI Chatbot Widget
+     Shows on every page via footer
+════════════════════════════════════ -->
+{% if session.get('user_id') %}
+<style>
+.chatbot-fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3000;box-shadow:0 6px 20px rgba(30,136,229,.4);border:none;color:#fff;font-size:22px;transition:.3s;}
+.chatbot-fab:hover{transform:scale(1.1);}
+.chat-window{position:fixed;bottom:96px;right:28px;width:340px;height:460px;background:#fff;border-radius:18px;box-shadow:0 16px 50px rgba(0,0,0,.18);z-index:3000;display:none;flex-direction:column;border:1.5px solid #e2e8f0;overflow:hidden;}
+.chat-window.open{display:flex;}
+.chat-header{background:linear-gradient(135deg,#1e88e5,#00bfa5);padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.chat-header .bot-icon{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.chat-header h4{color:#fff;font-size:14px;font-weight:700;margin:0;}
+.chat-header p{color:rgba(255,255,255,.8);font-size:11px;margin:0;}
+.chat-close{margin-left:auto;background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px;}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+.msg.bot{background:#f0f7ff;color:#1a202c;align-self:flex-start;border-bottom-left-radius:4px;}
+.msg.user{background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg.typing{background:#f0f7ff;align-self:flex-start;}
+.typing-dots span{display:inline-block;width:7px;height:7px;background:#94a3b8;border-radius:50%;animation:bounce .9s infinite;margin:0 2px;}
+.typing-dots span:nth-child(2){animation-delay:.15s;}
+.typing-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.chat-input-row{padding:12px;border-top:1px solid #f1f5f9;display:flex;gap:8px;flex-shrink:0;}
+.chat-input{flex:1;padding:9px 13px;border:1.5px solid #e2e8f0;border-radius:20px;font-size:13.5px;outline:none;font-family:inherit;transition:.2s;}
+.chat-input:focus{border-color:#1e88e5;}
+.chat-send{width:36px;height:36px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border:none;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.2s;flex-shrink:0;}
+.chat-send:hover{transform:scale(1.1);}
+.chat-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;display:none;}
+</style>
+
+<button class="chatbot-fab" onclick="toggleChat()" id="chatFab" title="MediBot AI Assistant">
+  <i class="fa fa-robot"></i>
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="bot-icon"><i class="fa fa-robot"></i></div>
+    <div><h4>MediBot AI</h4><p>Ask me about any medicine</p></div>
+    <button class="chat-close" onclick="toggleChat()"><i class="fa fa-xmark"></i></button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg bot">Hello! 👋 I'm <strong>MediBot</strong> — your AI medicine assistant.<br>Ask me about dosage, side effects, interactions, storage, or any medicine!</div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Ask about a medicine..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="chat-send" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<script>
+let chatOpen = false;
+
+function toggleChat(){
+  chatOpen = !chatOpen;
+  const w = document.getElementById("chatWindow");
+  chatOpen ? w.classList.add("open") : w.classList.remove("open");
+  document.getElementById("chatBadge").style.display = "none";
+}
+
+async function sendMsg(){
+  const inp = document.getElementById("chatInput");
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value = "";
+
+  addMsg(msg, "user");
+  const typingId = addTyping();
+
+  try {
+    const res = await fetch("/chatbot", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    removeTyping(typingId);
+    addMsg(data.reply, "bot");
+  } catch(e) {
+    removeTyping(typingId);
+    addMsg("Sorry, I couldn't connect right now. Please try again.", "bot");
+  }
+}
+
+function addMsg(text, type){
+  const box = document.getElementById("chatMessages");
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerHTML = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+function addTyping(){
+  const box = document.getElementById("chatMessages");
+  const id = "typing-" + Date.now();
+  const div = document.createElement("div");
+  div.className = "msg typing"; div.id = id;
+  div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return id;
+}
+
+function removeTyping(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+// Show badge after 3 seconds on first visit
+setTimeout(()=>{
+  if(!chatOpen) document.getElementById("chatBadge").style.display="flex";
+}, 3000);
+</script>
+{% endif %}

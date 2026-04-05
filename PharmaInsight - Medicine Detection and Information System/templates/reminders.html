@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Medicine Reminders | MediScan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#f7fafc;font-family:'Plus Jakarta Sans',sans-serif;color:#1a202c;}
+.page{max-width:1000px;margin:0 auto;padding:40px 20px;}
+.page-head{margin-bottom:28px;}
+.page-head h1{font-size:26px;font-weight:800;}
+.page-head p{color:#64748b;margin-top:4px;}
+.layout{display:grid;grid-template-columns:380px 1fr;gap:24px;}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}}
+.card{background:#fff;border-radius:16px;border:1.5px solid #e2e8f0;padding:26px;box-shadow:0 4px 16px rgba(0,0,0,.05);}
+.card h3{font-size:16px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card h3 i{color:#1e88e5;}
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:12px;font-weight:700;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.fg input,.fg select{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;outline:none;font-family:inherit;transition:.2s;}
+.fg input:focus,.fg select:focus{border-color:#1e88e5;}
+.btn{width:100%;padding:12px;background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(30,136,229,.3);}
+.reminder-item{display:flex;align-items:center;gap:14px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:10px;transition:.2s;}
+.reminder-item:hover{border-color:#1e88e5;background:#f8fafc;}
+.reminder-item.inactive{opacity:.5;}
+.ri-icon{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#1e88e5,#00bfa5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0;}
+.ri-info{flex:1;}
+.ri-name{font-weight:700;font-size:15px;}
+.ri-meta{font-size:12px;color:#64748b;margin-top:2px;}
+.ri-time{font-size:13px;font-weight:700;color:#1e88e5;white-space:nowrap;}
+.action-btn{padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.2s;}
+.toggle-btn{background:#eff6ff;color:#1e88e5;}
+.toggle-btn:hover{background:#1e88e5;color:#fff;}
+.del-btn{background:#fff0f0;color:#ef4444;}
+.del-btn:hover{background:#ef4444;color:#fff;}
+.empty{text-align:center;padding:40px;color:#94a3b8;}
+.empty i{font-size:40px;display:block;margin-bottom:12px;color:#e2e8f0;}
+</style></head><body>
+{% include "header.html" %}
+<div class="page">
+  <div class="page-head">
+    <h1><i class="fa fa-bell" style="color:#1e88e5;margin-right:8px;"></i>Medicine Reminders</h1>
+    <p>Set reminders to never miss a dose</p>
+  </div>
+  <div class="layout">
+    <!-- ADD FORM -->
+    <div class="card">
+      <h3><i class="fa fa-plus-circle"></i>Add Reminder</h3>
+      <form method="POST">
+        <input type="hidden" name="action" value="add">
+        <div class="fg"><label>Medicine Name</label><input type="text" name="medicine_name" placeholder="e.g. Metformin 500mg" required></div>
+        <div class="fg"><label>Dose</label><input type="text" name="dose" placeholder="e.g. 1 tablet"></div>
+        <div class="fg"><label>Frequency</label>
+          <select name="frequency">
+            <option>Once daily</option><option>Twice daily</option>
+            <option>Three times daily</option><option>Every 6 hours</option>
+            <option>Weekly</option><option>As needed</option>
+          </select>
+        </div>
+        <div class="fg"><label>Reminder Time</label><input type="time" name="reminder_time" required></div>
+        <div class="fg"><label>Start Date</label><input type="date" name="start_date"></div>
+        <div class="fg"><label>End Date (optional)</label><input type="date" name="end_date"></div>
+        <button class="btn" type="submit"><i class="fa fa-bell"></i> Set Reminder</button>
+      </form>
+    </div>
+
+    <!-- REMINDERS LIST -->
+    <div>
+      <div class="card">
+        <h3><i class="fa fa-list"></i>My Reminders ({{ reminders|length }})</h3>
+        {% if reminders %}
+          {% for r in reminders %}
+          <div class="reminder-item {% if not r['active'] %}inactive{% endif %}">
+            <div class="ri-icon"><i class="fa fa-{% if r['active'] %}bell{% else %}bell-slash{% endif %}"></i></div>
+            <div class="ri-info">
+              <div class="ri-name">{{ r['medicine_name'] }}</div>
+              <div class="ri-meta">{{ r['dose'] }} · {{ r['frequency'] }}{% if r['start_date'] %} · From {{ r['start_date'] }}{% endif %}</div>
+            </div>
+            <div class="ri-time">{{ r['reminder_time'] or '—' }}</div>
+            <form method="POST" style="display:flex;gap:5px;">
+              <input type="hidden" name="id" value="{{ r['id'] }}">
+              <button name="action" value="toggle" class="action-btn toggle-btn" title="Toggle">
+                <i class="fa fa-{% if r['active'] %}pause{% else %}play{% endif %}"></i>
+              </button>
+              <button name="action" value="delete" class="action-btn del-btn"
+                      onclick="return confirm('Delete this reminder?')" title="Delete">
+                <i class="fa fa-trash"></i>
+              </button>
+            </form>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty"><i class="fa fa-bell-slash"></i><p>No reminders yet. Add your first one!</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% include "footer.html" %}
+</body></html>

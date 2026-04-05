@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Account | MediScan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#eef4ff,#f0fffe);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;}
+.wrap{width:100%;max-width:500px;}
+.card{background:#fff;border-radius:20px;padding:36px;box-shadow:0 20px 60px rgba(0,0,0,.12);}
+.avatar{width:90px;height:90px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;margin:0 auto 16px;box-shadow:0 8px 24px rgba(30,136,229,.35);}
+.name{font-size:24px;font-weight:700;text-align:center;color:#0f172a;}
+.role{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;text-align:center;margin-bottom:20px;}
+.divider{height:1px;background:#f1f5f9;margin:18px 0;}
+.info-item{display:flex;align-items:center;gap:14px;padding:13px;background:#f8fafc;border-radius:12px;margin-bottom:10px;transition:.2s;}
+.info-item:hover{background:#eff6ff;}
+.info-icon{width:40px;height:40px;background:linear-gradient(135deg,#1e88e5,#00bfa5);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+.info-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:2px;}
+.info-value{font-size:14px;font-weight:600;color:#0f172a;}
+.info-value.muted{font-weight:400;color:#64748b;}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:.3s;text-decoration:none;border:none;width:100%;}
+.btn-primary{background:linear-gradient(135deg,#1e88e5,#00bfa5);color:#fff;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(30,136,229,.3);}
+.btn-outline{background:#fff;color:#64748b;border:1.5px solid #e2e8f0;}
+.btn-outline:hover{border-color:#1e88e5;color:#1e88e5;}
+.btn-danger{background:#fff0f0;color:#ef4444;border:1.5px solid #fca5a5;}
+.btn-danger:hover{background:#ef4444;color:#fff;}
+.back{text-align:center;margin-top:16px;}
+.back a{color:#1e88e5;text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="avatar"><i class="fa fa-user"></i></div>
+
+    {# Bug fix: was using user["name"] which breaks if user is None (logged-out access) 
+       — route now guarantees login, and migration ensures column exists #}
+    <div class="name">{{ user["name"] if user else "Unknown" }}</div>
+    <div class="role">Registered Member</div>
+
+    <div class="divider"></div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="fa fa-envelope"></i></div>
+      <div>
+        <div class="info-label">Email</div>
+        <div class="info-value">{{ user["email"] if user else "—" }}</div>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="fa fa-phone"></i></div>
+      <div>
+        <div class="info-label">Phone</div>
+        {# Bug fix: phone column now guaranteed to exist via migration #}
+        <div class="info-value {% if not user or not user['phone'] %}muted{% endif %}">
+          {{ user["phone"] if (user and user["phone"]) else "Not provided" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon"><i class="fa fa-calendar"></i></div>
+      <div>
+        <div class="info-label">Member Since</div>
+        {# Bug fix: created_at column now guaranteed via migration #}
+        <div class="info-value {% if not user or not user['created_at'] %}muted{% endif %}">
+          {{ user["created_at"][:10] if (user and user["created_at"]) else "Unknown" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="actions">
+      <a href="/search" class="btn btn-primary"><i class="fa fa-search"></i> Search Medicines</a>
+      <a href="/history" class="btn btn-outline"><i class="fa fa-clock-rotate-left"></i> My Search History</a>
+      <a href="/logout" class="btn btn-danger"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </div>
+
+  <div class="back"><a href="/"><i class="fa fa-arrow-left"></i> Back to Home</a></div>
+</div>
+</body>
+</html>
